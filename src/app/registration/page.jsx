@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ShieldCheck, Timer, CheckCircle, User, Mail, Phone, BookOpen, Building2, GraduationCap, History, ArrowRight, Calendar, RotateCcw } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -21,6 +21,10 @@ const validationSchema = Yup.object({
 });
 
 export default function ExamPage() {
+
+    useEffect(()=>{
+       localStorage.clear();
+    },[])
     const router = useRouter();
     const formik = useFormik({
         initialValues: {
@@ -43,16 +47,17 @@ export default function ExamPage() {
                     body: JSON.stringify(values),
                 });
 
+
                 const data = await res.json();
                 if (data.success) {
                     localStorage.setItem('StudentData', JSON.stringify(values));
                     router.push("/instructions");
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('User Already Exist');
                 }
             } catch (error) {
                 console.error(error);
-                alert('Error submitting form');
+                alert('User Already Exist');
             }
         }
     });

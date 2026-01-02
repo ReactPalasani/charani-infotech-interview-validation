@@ -33,6 +33,7 @@ export default function SectionTabs() {
   }, [lockedSections]);
 
   const handleSectionChange = (newSection) => {
+     if (newSection === section) return;
     if (lockedSections.includes(newSection)) return;
 
     setLockedSections((prev) =>

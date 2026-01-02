@@ -75,6 +75,54 @@ export function ExamProvider({ children }) {
     localStorage.setItem("exam-time", time);
   }, [time]);
 
+   useEffect(() => {
+  const disableRefresh = (e) => {
+    // F5
+    if (e.key === "F5") {
+      e.preventDefault();
+    }
+
+    // Ctrl+R / Ctrl+Shift+R / Cmd+R
+    if (
+      (e.ctrlKey && e.key.toLowerCase() === "r") ||
+      (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "r") ||
+      (e.metaKey && e.key.toLowerCase() === "r")
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  window.addEventListener("keydown", disableRefresh);
+
+  return () => {
+    window.removeEventListener("keydown", disableRefresh);
+  };
+}, []);
+
+useEffect(() => {
+  const disableRefresh = (e) => {
+    // F5
+    if (e.key === "F5") {
+      e.preventDefault();
+    }
+
+    // Ctrl+R / Ctrl+Shift+R / Cmd+R
+    if (
+      (e.ctrlKey && e.key.toLowerCase() === "r") ||
+      (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "r") ||
+      (e.metaKey && e.key.toLowerCase() === "r")
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  window.addEventListener("keydown", disableRefresh);
+
+  return () => {
+    window.removeEventListener("keydown", disableRefresh);
+  };
+}, []);
+
   return (
     <ExamContext.Provider
       value={{
