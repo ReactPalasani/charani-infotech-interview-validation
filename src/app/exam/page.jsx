@@ -8,6 +8,8 @@ import QuestionPalette from "@/components/QuestionsPalette";
 import SubmitExamButton from "@/components/SubmitExamButton";
 import { useRouter } from "next/navigation";
 import { useState,useEffect } from "react";
+import FullScreenComponent from "@/components/FullScreenComponent";
+import ExamLayout from "./layout";
 export default function ExamPage() {
   const router=useRouter();
    const [StudentData, setStudentData] = useState(null);
@@ -22,19 +24,25 @@ useEffect(() => {
   }
 }, []);
 
+
+
   return (
+    <ExamLayout>
     <ExamProvider>
       <div className="bg-gray-100 min-h-screen">
         <Header />
+        <div className=" flex gap-4 p-6 ">
         <SectionTabs />
         <Timer />
+        </div>
 
         <div className="flex gap-4 p-6">
           <ExamPanel />
           <QuestionPalette />
         </div>
-        <SubmitExamButton />
+        {/* <SubmitExamButton /> */}
       </div>
     </ExamProvider>
+    </ExamLayout>
   );
 }

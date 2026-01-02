@@ -1,39 +1,36 @@
 "use client";
 
 import { useExam } from "@/context/ExamContext";
+import { Users, Brain, MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
+
+const SECTIONS = [
+  { key: "Aptitude", label: "Aptitude", icon: Users },
+  { key: "Reasoning", label: "Reasoning", icon: Brain },
+  { key: "Communication", label: "Communication", icon: MessageSquare },
+];
 
 export default function SectionTabs() {
   const { section, setSection } = useExam();
-
-  const sections = ["Aptitude", "Reasoning", "Communication"];
   const [lockedSections, setLockedSections] = useState([]);
 
-  // 🔹 Load locked sections safely
+  /* ---------- load locks ---------- */
   useEffect(() => {
     try {
-      const savedLocks = localStorage.getItem("Lock-Tabs");
-      if (savedLocks) {
-        const parsed = JSON.parse(savedLocks);
-        if (Array.isArray(parsed)) {
-          setLockedSections(parsed);
-        }
-      }
+      const saved = localStorage.getItem("Lock-Tabs");
+      if (saved) setLockedSections(JSON.parse(saved));
     } catch {
       localStorage.removeItem("Lock-Tabs");
     }
   }, []);
 
-  // 🔹 Save locked sections
+  /* ---------- persist locks ---------- */
   useEffect(() => {
-    localStorage.setItem(
-      "Lock-Tabs",
-      JSON.stringify(lockedSections)
-    );
+    localStorage.setItem("Lock-Tabs", JSON.stringify(lockedSections));
   }, [lockedSections]);
 
   const handleSectionChange = (newSection) => {
-     if (newSection === section) return;
+    if (newSection === section) return;
     if (lockedSections.includes(newSection)) return;
 
     setLockedSections((prev) =>
@@ -44,21 +41,24 @@ export default function SectionTabs() {
   };
 
   return (
-    <div className="flex border-b bg-white">
-      {sections.map((s) => {
-        const isLocked = lockedSections.includes(s);
+    <div className="flex border w-1/2">
+      {SECTIONS.map(({ key, label, icon: Icon }) => {
+        const isLocked = lockedSections.includes(key);
+        const isActive = section === key;
 
         return (
           <button
-            key={s}
+            key={key}
             disabled={isLocked}
-            onClick={() => handleSectionChange(s)}
-            className={`flex-1 py-3 font-semibold transition
-              ${section === s ? "bg-blue-700 text-white" : "bg-gray-100"}
+            onClick={() => handleSectionChange(key)}
+            className={`flex-1 py-3 font-semibold transition border shadow
+              flex items-center justify-center gap-2
+              ${isActive ? "bg-blue-700 text-white" : "bg-white"}
               ${isLocked ? "opacity-50 cursor-not-allowed" : ""}
             `}
           >
-            {s}
+            <Icon className="w-4 h-4" />
+            {label}
           </button>
         );
       })}

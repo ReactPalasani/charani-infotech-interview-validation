@@ -2,6 +2,7 @@
 import { createContext, use, useContext, useEffect, useState } from "react";
 import { shuffleQuestion } from "@/app/utils/shuffleQuestion";
 import { shuffleArray } from "@/app/utils/shuffle";
+import React, { useRef } from "react";
 const ExamContext = createContext(null);
 
 export function ExamProvider({ children }) {
@@ -123,7 +124,50 @@ useEffect(() => {
   };
 }, []);
 
+useEffect(() => {
+  const onExit = () => {
+    alert("Fullscreen required for exam!");
+    document.documentElement.requestFullscreen();
+  };
+
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) onExit();
+  });
+
+  return () =>
+    document.removeEventListener("fullscreenchange", onExit);
+}, []);
+
+ const fullScreenTargetRef = useRef(null);
+
+  const handleFullScreen = async () => {
+    const el = fullScreenTargetRef.current;
+
+    if (!el) return;
+
+    try {
+      if (el.requestFullscreen) {
+        await el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) {
+        await el.webkitRequestFullscreen();
+      }
+
+    } catch (err) {
+      console.error("Fullscreen failed:", err);
+    }
+  };
+
   return (
+       <div
+      ref={fullScreenTargetRef}
+    >
+      <button
+        onClick={handleFullScreen}
+        className="bg-black text-white p-2 rounded-sm"
+      >
+        Go Full Screen
+      </button>
+
     <ExamContext.Provider
       value={{
         section,
@@ -140,6 +184,7 @@ useEffect(() => {
     >
       {children}
     </ExamContext.Provider>
+        </div>
   );
 }
 

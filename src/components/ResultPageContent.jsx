@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { database } from "@/lib/firebase";
 import { ref, get, query, orderByChild, equalTo } from "firebase/database";
 import Header from "@/components/Header";
-
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 export default function ResultPageContent() {
   const [result, setResult] = useState(null);
-
+  const router=useRouter();
   useEffect(() => {
     const fetchResult = async () => {
       try {
@@ -33,12 +34,9 @@ export default function ResultPageContent() {
     fetchResult();
   }, []);
 
-  if (!result)
+  if (!result){
     return <div className="p-6 text-center">Loading your result...</div>;
-
-  setTimeout(() => {
-    localStorage.clear();
-  }, 1000);
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
@@ -60,7 +58,13 @@ export default function ResultPageContent() {
         <p className="text-xl font-bold mb-2">
           Correct Answers: {result.correctAnswers}
         </p>
+
+        <p className="text-xl font-bold mb-2">
+          Wrong Answers: {result.totalQuestions - result.correctAnswers}
+        </p>
+              <button className=" flex bg-blue-900 text-white  p-2 rounded-sm" onClick={()=>{localStorage.clear(); router.push('/registration')}}> < ArrowLeft/>Go Back </button>
       </div>
+
     </div>
   );
 }

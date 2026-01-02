@@ -1,5 +1,6 @@
 "use client";
 import { useExam } from "@/context/ExamContext";
+import { TimerIcon } from "lucide-react";
 import { useEffect } from "react";
 
 
@@ -14,8 +15,8 @@ export default function Timer() {
   }, []);
 
   return (
-    <div className="bg-black text-white p-2 text-center">
-      Time Left: {Math.floor(time / 60)}:{String(time % 60).padStart(2, "0")}
+    <div className="bg-black text-white p-2 text-center flex">
+     <TimerIcon className=" text-red-600"></TimerIcon> Time Left: {Math.floor(time / 60)}:{String(time % 60).padStart(2, "0")}
     </div>
   );
 }

@@ -1,7 +1,34 @@
 "use client";
 
-function ExamLayout({ children }) {
-    return <div className=" grid space-y-10" >{children}</div>;
-    }
+import { useEffect, useRef } from "react";
 
-export default ExamLayout;
+export default function ExamLayout({ children }) {
+  const ref = useRef(null);
+
+  const enterFullscreen = async () => {
+    if (ref.current?.requestFullscreen) {
+      await ref.current.requestFullscreen();
+    }
+  };
+
+  useEffect(() => {
+    const handleExit = () => {
+      if (!document.fullscreenElement) {
+        alert("Fullscreen required for exam!");
+        ref.current?.requestFullscreen();
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleExit);
+
+    return () =>
+      document.removeEventListener("fullscreenchange", handleExit);
+  }, []);
+
+  return (
+    <div ref={ref}>
+      <button onClick={enterFullscreen} className="hidden" />
+      {children}
+    </div>
+  );
+}

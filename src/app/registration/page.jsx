@@ -9,12 +9,14 @@ import { useRouter } from "next/navigation";
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email('Invalid email format').required('Email is required'),
-    collegeId: Yup.string().required('College ID is required'),
+    collegeId: Yup.string().required('College ID is required')
+    .max(12,'Maximum 12 letters')
+    .min(10, 'Enter minimum 10 letters'),
     phone: Yup.string()
         .matches(/^[6-9][0-9]{9}$/, 'Phone number must start with 6, 7, 8, or 9 and be 10 digits')
         .required('Phone number is required'),
     collegeName: Yup.string().required('College Name is required'),
-    gender: Yup.string().required('Gender is required'),
+    gender: Yup.string().required('Gender is required') .oneOf(['male', 'female', 'other'], 'Please select a valid gender'),
     branch: Yup.string().required('Branch is required'),
     year: Yup.string().required('Year is required'),
     backLogs: Yup.number().min(0, 'Cannot be negative').required('Required'),
@@ -98,7 +100,7 @@ export default function ExamPage() {
                             {/* Name */}
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><User className="w-4 h-4" /> Name <span className='text-red-600'>*</span></label>
-                                <input id="name" name="name" type="text" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.name} placeholder='Enter your full name'
+                                <input id="name" name="name" type="text" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.name} placeholder='Enter your full name' autoFocus
                                     className={`p-2 border rounded-lg outline-none transition-all ${formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300 focus:border-blue-900'}`} />
                                 {formik.touched.name && formik.errors.name && <div className='text-red-600 text-xs'>{formik.errors.name}</div>}
                             </div>
@@ -122,7 +124,7 @@ export default function ExamPage() {
                             {/* College ID */}
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><BookOpen className="w-4 h-4" /> Roll-No <span className='text-red-600'>*</span></label>
-                                <input id="collegeId" name="collegeId" type="text" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.collegeId} placeholder='Enter your college id'
+                                <input id="collegeId" name="collegeId" type="text" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.collegeId} placeholder='Enter your college id' minLength={10} maxLength={12}
                                     className="p-2 border border-gray-300 rounded-lg focus:border-blue-900 outline-none" />
                                 {formik.touched.collegeId && formik.errors.collegeId && <div className='text-red-600 text-xs'>{formik.errors.collegeId}</div>}
                             </div>
@@ -141,25 +143,28 @@ export default function ExamPage() {
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-bold text-blue-900 flex items-center gap-2"> <User className="w-4 h-4" /> Gender <span className='text-red-600'>*</span></label>
                                 <select name="gender" onChange={formik.handleChange} value={formik.values.gender} className="p-2 border border-gray-300 rounded-lg outline-none">
-                                    <option value="">select Gender</option>
+                                    <option value=''>select Gender</option>
                                     <option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
                                 </select>
+                                {formik.touched.gender && formik.errors.gender && <div className='text-red-600 text-xs'>{formik.errors.gender}</div>}
                             </div>
                             {/* Branch */}
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><GraduationCap className="w-4 h-4" />Branch <span className='text-red-600'>*</span></label>
                                 <select name="branch" onChange={formik.handleChange} value={formik.values.branch} className="p-2 border border-gray-300 rounded-lg outline-none">
-                                     <option value="">select Branch</option>
+                                     <option>select Branch</option>
                                     <option value="aiml">AI/ML</option><option value="cse">CSE</option><option value="civil">CIVIL</option><option value="ece">ECE</option>
                                 </select>
+                                { formik.touched.branch && formik.errors.branch && <div className='text-red-600 text-xs'>{formik.errors.branch}</div>}
                             </div>
                             {/* Year */}
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><Calendar className="w-4 h-4" /> Year <span className='text-red-600'>*</span></label>
                                 <select name="year" onChange={formik.handleChange} value={formik.values.year} className="p-2 border border-gray-300 rounded-lg outline-none">
-                                   <option value="">select Year</option>
+                                   <option >select Year</option>
                                     <option value="1">1st Year</option><option value="2">2nd Year</option><option value="3">3rd Year</option><option value="4">4th Year</option>
                                 </select>
+                                {formik.touched.year && formik.errors.year && <div className='text-red-600 text-xs'>{formik.errors.year}</div>}
                             </div>
                         </div>
 
