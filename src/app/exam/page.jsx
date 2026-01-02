@@ -17,10 +17,11 @@ useEffect(() => {
   if (data) {
     setStudentData(JSON.parse(data));
   }
-}, []);
-  if(!StudentData){
-     router.push('/registration');
+  else{
+ router.push('/registration');
   }
+}, []);
+
   return (
     <ExamProvider>
       <div className="bg-gray-100 min-h-screen">

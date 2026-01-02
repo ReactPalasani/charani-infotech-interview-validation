@@ -23,10 +23,11 @@ useEffect(() => {
   if (data) {
     setStudentData(JSON.parse(data));
   }
-}, []);
-  if(!StudentData){
-     router.push('/registration');
+  else{
+    window.location.href = "/registration";
   }
+}, []);
+
 
   return (
 
