@@ -16,7 +16,14 @@ function InstructionsPage() {
       window.location.href = "/exam";
     }
   };
-const StudentData= JSON.parse( localStorage.getItem('StudentData'));
+   const [StudentData, setStudentData] = useState(null);
+
+useEffect(() => {
+  const data = localStorage.getItem("StudentData");
+  if (data) {
+    setStudentData(JSON.parse(data));
+  }
+}, []);
   if(!StudentData){
      router.push('/registration');
   }

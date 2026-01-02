@@ -7,10 +7,17 @@ import ExamPanel from "@/components/ExamPannel";
 import QuestionPalette from "@/components/QuestionsPalette";
 import SubmitExamButton from "@/components/SubmitExamButton";
 import { useRouter } from "next/navigation";
-
+import { useState,useEffect } from "react";
 export default function ExamPage() {
   const router=useRouter();
-   const StudentData= JSON.parse( localStorage.getItem('StudentData'));
+   const [StudentData, setStudentData] = useState(null);
+
+useEffect(() => {
+  const data = localStorage.getItem("StudentData");
+  if (data) {
+    setStudentData(JSON.parse(data));
+  }
+}, []);
   if(!StudentData){
      router.push('/registration');
   }
