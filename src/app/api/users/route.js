@@ -1,0 +1,27 @@
+import { NextResponse } from "next/server";
+import { database } from "@/lib/firebase";
+import { ref, push, set, get } from "firebase/database";
+
+// POST → Save student data
+export async function POST(req) {
+  try {
+    const body = await req.json();
+
+    const dbRef = ref(database, "users/");
+    const newUserRef = push(dbRef);
+
+    await set(newUserRef, body);
+
+    return NextResponse.json({
+      success: true,
+      message: "User saved successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 500 }
+    );
+  }
+}
+
