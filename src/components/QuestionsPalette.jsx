@@ -14,9 +14,9 @@ export default function QuestionPalette() {
           <button
             key={i}
             onClick={() => setCurrentIndex(i)}
-            className={`p-2 border 
-              ${i === currentIndex ? "bg-blue-600 text-white rounded-2xl border " : ""}
-              ${sectionAnswers[i] ? "bg-green-500 text-white rounded-2xl border "  : ""}
+            className={`p-2 border  rounded-sm
+              ${i === currentIndex ? "bg-blue-600 text-white rounded-sm border " : ""}
+              ${sectionAnswers[i] ? "bg-green-500 text-white rounded-sm border "  : ""}
             `}
           >
             {i + 1}

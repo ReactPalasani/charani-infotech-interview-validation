@@ -31,7 +31,7 @@ export default function ExamPanel() {
   };
 
   return (
-    <div className="bg-white w-1/2 min-w-10/12  p-4 rounded-lg shadow">
+    <div className="bg-white w-1/2 min-w-8/12  p-4 rounded-lg shadow">
       <h3>
         Q{currentIndex + 1}. {question.question1}
       </h3>
