@@ -7,7 +7,6 @@ import { useEffect } from "react";
 
 export default function SubmitExamButton() {
   const { answers, questions, time } = useExam();
-  console.log("Answers at submit:", answers);
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -77,7 +76,7 @@ export default function SubmitExamButton() {
         onClick={handleSubmit}
         className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded"
       >
-        Final Submit 
+        Final Submit
       </button>
     </div>
   );

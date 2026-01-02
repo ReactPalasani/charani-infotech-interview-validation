@@ -1,6 +1,7 @@
 "use client";
 import { createContext, use, useContext, useEffect, useState } from "react";
-
+import { shuffleQuestion } from "@/app/utils/shuffleQuestion";
+import { shuffleArray } from "@/app/utils/shuffle";
 const ExamContext = createContext(null);
 
 export function ExamProvider({ children }) {
@@ -47,13 +48,26 @@ export function ExamProvider({ children }) {
 
   
   // fetch questions on section change
+//   useEffect(() => {
+//     fetch(`/api/${section.toLowerCase()}`)
+//       .then(res => res.json())
+//       .then(data => {
+//         setQuestions(data.data || []);
+//         setCurrentIndex(0);
+//       });
+//   }, [section]);
+
   useEffect(() => {
-    fetch(`/api/${section.toLowerCase()}`)
-      .then(res => res.json())
-      .then(data => {
-        setQuestions(data.data || []);
-        setCurrentIndex(0);
-      });
+    async function loadQuestions() {
+      const res = await fetch(`/api/${section.toLowerCase()}`);
+      const data = await res.json();
+
+      const shuffled = shuffleArray(data.data).map(shuffleQuestion);
+      setQuestions(shuffled);
+      setCurrentIndex(0);
+    }
+
+    loadQuestions();
   }, [section]);
 
   // persist timer
