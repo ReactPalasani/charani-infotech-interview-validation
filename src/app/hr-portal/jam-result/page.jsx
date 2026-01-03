@@ -5,18 +5,18 @@ import DataTable from "react-data-table-component";
 import Header from "@/components/Header";
 import { View } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Switch from "@/components/Switching-Exam-Result-Pannels";
 
-function HrPortal() {
+function HrPortal_Exam() {
   const [studentData, setStudentData] = useState([]);
   const [collegeIdSearch, setCollegeIdSearch] = useState("");
   const [correctAnswersSearch, setCorrectAnswersSearch] = useState("");
+  const [selectSearch, setSelectSearch] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("/api/result");
+        const res = await fetch("/api/jam-result");
         const data = await res.json();
 
         if (data.success) {
@@ -46,17 +46,25 @@ function HrPortal() {
     return studentData.filter(student => {
       const matchCollegeId = collegeIdSearch
         ? student.collegeId
-            ?.toLowerCase()
-            .includes(collegeIdSearch.toLowerCase())
+          ?.toLowerCase()
+          .includes(collegeIdSearch.toLowerCase())
         : true;
 
       const matchCorrectAnswers = correctAnswersSearch
         ? Number(student.correctAnswers) === Number(correctAnswersSearch)
         : true;
 
-      return matchCollegeId && matchCorrectAnswers;
+      const matchSelect =
+        selectSearch === ""
+          ? true
+          : selectSearch === "yes"
+            ? student.select === true
+            : student.select === false;
+
+      return matchCollegeId && matchCorrectAnswers && matchSelect;
     });
-  }, [studentData, collegeIdSearch, correctAnswersSearch]);
+  }, [studentData, collegeIdSearch, correctAnswersSearch, selectSearch]);
+
 
   // 📊 Columns
   const columns = [
@@ -67,25 +75,29 @@ function HrPortal() {
     { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
     { name: "Correct Answers", selector: row => row.correctAnswers, sortable: true },
     { name: "Submitted At", selector: row => row.submittedAt, sortable: true },
+    { name: "Submitted At", selector: row => row.submittedAt, sortable: true },
+    { name: "Score", selector: row => row.score, sortable: true },
+    { name: "Topic", selector: row => row.topic, sortable: true },
+    { name: "Select", selector: row => row.select === true ? "Yes" : "NO", sortable: true },
+    { name: "Selector Name", selector: row => row.selectorName, sortable: true },
     {
       name: "Action",
       cell: row => (
         <button
           onClick={() =>
-            router.push(`/hr-portal/${row.collegeId}/${row.id}`)
+            router.push(`/tr1-portal/${row.collegeId}/${row.id}`)
           }
           className="bg-blue-900 text-white px-3 py-1 rounded text-sm"
         >
           <View size={16} />
         </button>
       ),
-      ignoreRowClick: true, // ✅ only this is needed
+      ignoreRowClick: true,
     },
   ];
 
   return (
     <div className="p-6">
-
       <h1 className="text-2xl font-bold mb-4">
         HR Portal - Student Records
       </h1>
@@ -107,6 +119,19 @@ function HrPortal() {
           onChange={e => setCorrectAnswersSearch(e.target.value)}
           className="border px-3 py-2 rounded w-64"
         />
+        <div className="grid">
+          <label htmlFor="" className="font-bold">Select Or not</label>
+          <select
+            value={selectSearch}
+            onChange={e => setSelectSearch(e.target.value)}
+            className="border px-3 py-2 rounded w-64"
+          >
+            <option value="">All (Select)</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
       </div>
 
       <DataTable
@@ -121,4 +146,4 @@ function HrPortal() {
   );
 }
 
-export default HrPortal;
+export default HrPortal_Exam;

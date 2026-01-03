@@ -5,9 +5,8 @@ import DataTable from "react-data-table-component";
 import Header from "@/components/Header";
 import { View } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Switch from "@/components/Switching-Exam-Result-Pannels";
 
-function HrPortal() {
+function HrPortal_Exam() {
   const [studentData, setStudentData] = useState([]);
   const [collegeIdSearch, setCollegeIdSearch] = useState("");
   const [correctAnswersSearch, setCorrectAnswersSearch] = useState("");
@@ -85,7 +84,6 @@ function HrPortal() {
 
   return (
     <div className="p-6">
-
       <h1 className="text-2xl font-bold mb-4">
         HR Portal - Student Records
       </h1>
@@ -121,4 +119,4 @@ function HrPortal() {
   );
 }
 
-export default HrPortal;
+export default HrPortal_Exam;

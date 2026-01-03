@@ -7,9 +7,10 @@ import Header from "@/components/Header";
 import { MessagesSquare, NotepadText, PencilLine } from "lucide-react";
 
 export default function StudentDetailsPage() {
-  const { resultId } = useParams();
+  const { resultId,collegeId } = useParams();
   const router = useRouter();
   const [student, setStudent] = useState(null);
+ console.log(" resultid",resultId);
 
   // Controlled form state
   const [feedback, setFeedback] = useState("");
@@ -18,35 +19,52 @@ export default function StudentDetailsPage() {
   const [selectorName, setSelectorName] = useState("");
   const [select, setSelect] = useState(false); // optional
 
-  useEffect(() => {
-    const fetchDetails = async () => {
-      try {
-        const res = await fetch("/api/result");
-        const data = await res.json();
+useEffect(() => {
+  const fetchDetails = async () => {
+    try {
+      const res = await fetch("/api/result");
+      const data = await res.json();
+      console.log("data",data.data);
+      
+       console.log("data1",data.data[collegeId])
+      if (!data.success || !data.data) return;
 
-        if (!data.success) return;
+      const collegeResults = data.data[collegeId];
 
-        const flattened = Object.entries(data.data || {}).flatMap(
-          ([, collegeObj]) =>
-            Object.entries(collegeObj).map(([key, value]) => ({
-              id: key,
-              ...value,
-            }))
-        );
-
-        const found = flattened.find(item => item.id === resultId);
-        setStudent(found);
-      } catch (error) {
-        console.error(error);
+      // ❌ No data for this college
+      if (!collegeResults) {
+        setStudent(null);
+        return;
       }
-    };
 
-    fetchDetails();
-  }, [resultId]);
+      // ✅ Convert results object → array
+      const flattened = Object.entries(collegeResults).map(
+        ([id, value]) => ({
+          id,
+          ...value,
+        })
+      );
 
+      // ✅ Find result by resultId
+      const found = flattened.find(item => item.id !== resultId);
+
+      setStudent(found || null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchDetails();
+}, [collegeId, resultId]);
+
+      console.log("student", student)
   if (!student) {
-    return <div className="p-6 text-center">Loading details...</div>;
-  }
+  return (
+    <div className="p-6 text-center text-red-600">
+      No result found for this College ID
+    </div>
+  );
+}
 
   // Submit handler
   const handleSubmit = async () => {
@@ -59,14 +77,12 @@ export default function StudentDetailsPage() {
       correctAnswers: student.correctAnswers,
       submittedAt: student.submittedAt,
       feedback,
-      topic,
-      score,
       selectorName,
       select:select
     };
  
     try {
-      const res = await fetch("/api/jam-result", {
+      const res = await fetch("/api/tr1-Exam-Result", {
         method: "POST",    
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -153,7 +169,7 @@ export default function StudentDetailsPage() {
 
             <div className="mt-6 space-y-4">
               <div className="flex flex-col lg:flex-row gap-6">
-                <div className="flex-1">
+                {/* <div className="flex-1">
                   <label
                     htmlFor="topic"
                     className="font-bold flex items-center gap-2 mb-1"
@@ -168,9 +184,9 @@ export default function StudentDetailsPage() {
                     className="border-2 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                     placeholder="Enter Topic Here"
                   />
-                </div>
+                </div> */}
 
-                <div className="flex-1">
+                {/* <div className="flex-1">
                   <label
                     htmlFor="score"
                     className="font-bold flex items-center gap-2 mb-1"
@@ -190,7 +206,7 @@ export default function StudentDetailsPage() {
                       </option>
                     ))}
                   </select>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex items-center gap-2">

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/firebase";
-import { ref, push, set, get } from "firebase/database";// GET → Fetch aptitude questions
+import { ref, push, set, get } from "firebase/database";
 export async function GET() {
   try {
     const dbRef = ref(database, "Technical/");
