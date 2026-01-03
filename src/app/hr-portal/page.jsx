@@ -1,26 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import Header from "@/components/Header";
+import { View } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function HrPortal() {
   const [studentData, setStudentData] = useState([]);
+  const [collegeIdSearch, setCollegeIdSearch] = useState("");
+  const [correctAnswersSearch, setCorrectAnswersSearch] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch('/api/users'); // Your API route
+        const res = await fetch("/api/result");
         const data = await res.json();
 
         if (data.success) {
-          // Flatten nested Firebase data structure
-          const flattened = Object.values(data.data).flatMap((collegeObj) =>
-            Object.values(collegeObj)
+          // ✅ CORRECT flattening
+          const flattened = Object.entries(data.data || {}).flatMap(
+            ([collegeId, collegeObj]) =>
+              Object.entries(collegeObj).map(([resultId, value]) => ({
+                id: resultId,
+                collegeId,
+                ...value,
+              }))
           );
+
           setStudentData(flattened);
-        } else {
-          alert("No users found");
         }
       } catch (error) {
         console.error(error);
@@ -31,26 +40,78 @@ function HrPortal() {
     fetchStudents();
   }, []);
 
-  // Define columns for DataTable
+  // 🔍 Filtering
+  const filteredData = useMemo(() => {
+    return studentData.filter(student => {
+      const matchCollegeId = collegeIdSearch
+        ? student.collegeId
+            ?.toLowerCase()
+            .includes(collegeIdSearch.toLowerCase())
+        : true;
+
+      const matchCorrectAnswers = correctAnswersSearch
+        ? Number(student.correctAnswers) === Number(correctAnswersSearch)
+        : true;
+
+      return matchCollegeId && matchCorrectAnswers;
+    });
+  }, [studentData, collegeIdSearch, correctAnswersSearch]);
+
+  // 📊 Columns
   const columns = [
-    { name: "Name", selector: row => row.name, sortable: true },
-    { name: "Email", selector: row => row.email, sortable: true },
+    { name: "Name", selector: row => row.studentName, sortable: true },
+    { name: "Email", selector: row => row.studentEmail, sortable: true },
     { name: "College ID", selector: row => row.collegeId, sortable: true },
     { name: "College Name", selector: row => row.collegeName, sortable: true },
-    { name: "Branch", selector: row => row.branch, sortable: true },
-    { name: "Year", selector: row => row.year, sortable: true },
-    { name: "Gender", selector: row => row.gender, sortable: true },
-    { name: "Phone", selector: row => row.phone, sortable: true },
-    { name: "Backlogs", selector: row => row.backLogs, sortable: true },
+    { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
+    { name: "Correct Answers", selector: row => row.correctAnswers, sortable: true },
+    { name: "Submitted At", selector: row => row.submittedAt, sortable: true },
+    {
+      name: "Action",
+      cell: row => (
+        <button
+          onClick={() =>
+            router.push(`/hr-portal/${row.collegeId}/${row.id}`)
+          }
+          className="bg-blue-900 text-white px-3 py-1 rounded text-sm"
+        >
+          <View size={16} />
+        </button>
+      ),
+      ignoreRowClick: true, // ✅ only this is needed
+    },
   ];
 
   return (
     <div className="p-6">
-        <Header/>
-      <h1 className="text-2xl font-bold mb-4 ">HR Portal - Student Records</h1>
+      <Header />
+
+      <h1 className="text-2xl font-bold mb-4">
+        HR Portal - Student Records
+      </h1>
+
+      {/* Filters */}
+      <div className="flex gap-4 mb-4">
+        <input
+          type="text"
+          placeholder="Search by College ID"
+          value={collegeIdSearch}
+          onChange={e => setCollegeIdSearch(e.target.value)}
+          className="border px-3 py-2 rounded w-64"
+        />
+
+        <input
+          type="number"
+          placeholder="Search by Correct Answers"
+          value={correctAnswersSearch}
+          onChange={e => setCorrectAnswersSearch(e.target.value)}
+          className="border px-3 py-2 rounded w-64"
+        />
+      </div>
+
       <DataTable
         columns={columns}
-        data={studentData}
+        data={filteredData}
         pagination
         highlightOnHover
         striped
