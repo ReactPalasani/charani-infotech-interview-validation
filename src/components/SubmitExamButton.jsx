@@ -1,7 +1,7 @@
 "use client";
 import { useExam } from "@/context/ExamContext";
 import { database } from "@/lib/firebase";
-import { ref, push } from "firebase/database";
+import { ref, push, set } from "firebase/database";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -11,7 +11,7 @@ export default function SubmitExamButton() {
 
   const handleSubmit = async () => {
     if (!confirm("Are you sure you want to submit the exam?")) return;
-          const StudentData=JSON.parse(localStorage.getItem("StudentData")) || {};
+    const StudentData = JSON.parse(localStorage.getItem("StudentData")) || {};
     // 🔹 Student details from localStorage or form
     const studentName = StudentData.name || "Unknown";
     const studentEmail = StudentData.email || "Unknown";
@@ -32,7 +32,7 @@ export default function SubmitExamButton() {
 
       sectionQs.forEach((q, idx) => {
         totalQuestions++;
-        if (sectionAns[idx] === q.Answer){ correctAnswers++; console.log("Correct answer for question", );}
+        if (sectionAns[idx] === q.Answer) { correctAnswers++; console.log("Correct answer for question",); }
       });
     });
 
@@ -48,18 +48,26 @@ export default function SubmitExamButton() {
       correctAnswers,
       percentage,
       submittedAt: new Date().toISOString(),
+
     };
 
     try {
-      const resultRef = ref(database, "ExamResults");
-      await push(resultRef, resultData);
+      const res = await fetch('/api/result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resultData),
+      });
 
-      // Clear timer and answers
-      localStorage.removeItem("exam-time");
-      alert("Exam submitted successfully!");
-      router.push("/result");
-    } catch (err) {
-      console.error(err);
+      const data = await res.json();
+      if (data.success) {
+        localStorage.removeItem("exam-time");
+        alert("Exam submitted successfully!");
+        router.push("/result");
+      } else {
+        alert('Exam Submition Failed');
+      }
+    } catch (error) {
+      console.error(error);
       alert("Failed to submit exam.");
     }
   };

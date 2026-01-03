@@ -7,14 +7,14 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const dbRef = ref(database, `users/${body.collegeId}`);
+    const dbRef = ref(database, `ExamResults/${body.collegeId}`);
     const newUserRef = push(dbRef);
 
     await set(newUserRef, body);
 
     return NextResponse.json({
       success: true,
-      message: "User saved successfully",
+      message: "Result saved successfully",
     });
   } catch (error) {
     console.error(error);
@@ -28,7 +28,7 @@ export async function POST(req) {
 
 export async function GET() {
   try {
-    const dbRef = ref(database, "users/");
+    const dbRef = ref(database, "ExamResults/");
     const snapshot = await get(dbRef);
     console.log("Snapshot data:", snapshot.val());
     return NextResponse.json({
