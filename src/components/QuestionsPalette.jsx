@@ -11,7 +11,7 @@ export default function QuestionPalette() {
   return (
     < div>
      <h1 className="bg-black text-white flex justify-center p-2 font-bold">Question Palette </h1>
-    <div className="w-1/4 bg-white p-4  shadow  border">
+    <div className="w-full bg-white p-4  shadow  border">
       <div className="grid grid-cols-5 gap-4  rounded-2xl mt-5" >
         {questions.map((_, i) => (
           <button
