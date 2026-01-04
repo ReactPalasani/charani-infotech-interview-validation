@@ -75,7 +75,7 @@ export default function ExamPage() {
                     <div>
                         <div className="flex items-center gap-4 mb-5">
                             <img src="/charani-logo.jpeg" alt="Logo" className="w-16 h-16 rounded-full border-2 border-white object-cover" />
-                            <h1 className="text-2xl font-bold tracking-tight">Charani Info Tech</h1>
+                            <h1 className="text-2xl font-bold tracking-tight">Charani Infotech</h1>
                         </div>
                         <h2 className="text-4xl font-bold mb-6 leading-tight">Feature Ready <br /> Assessments</h2>
                         <ul className="space-y-4 mb-5">

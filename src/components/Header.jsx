@@ -1,13 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 function Header() {
   const [student, setStudent] = useState(null);
-
+   const [admin, setAdmin] = useState(null);
+   const route=useRouter();
   useEffect(() => {
     const data = localStorage.getItem("StudentData");
     if (data) setStudent(JSON.parse(data));
   }, []);
+
+    useEffect(() => {
+    const data = localStorage.getItem("AdminLogin");
+    if (data) setAdmin(JSON.parse(data));
+    localStorage.removeItem("StudentData");
+  }, []);
+
+const handleLogout=()=>{
+  localStorage.clear();
+  route.push("/registration");
+}
 
   return (
     <header className="bg-blue-900 flex justify-between p-2 text-white items-center">
@@ -18,7 +30,7 @@ function Header() {
           alt="Charani logo"
           className="border border-white rounded-full"
         />
-        <strong className="text-lg">Charani Info Tech</strong>
+        <strong className="text-lg">Charani Infotech</strong>
       </div>
 
       {student && (
@@ -26,6 +38,10 @@ function Header() {
           <span className="font-bold">Candidate:</span> {student.studentId}
         </h1>
       )}
+      {admin &&(
+      <button className="font-bold" onClick={handleLogout}>Log-out</button>
+      )
+      }
     </header>
   );
 }
