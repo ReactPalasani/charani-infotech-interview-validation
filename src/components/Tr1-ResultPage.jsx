@@ -62,7 +62,7 @@ export default function ResultPageContent() {
         <p className="font-semibold">Name: {result.studentName}</p>
         <p className="font-semibold">Email: {result.studentEmail}</p>
         <p className="font-semibold">College: {result.collegeName}</p>
-        <p className="font-semibold">College ID: {result.collegeId}</p>
+        <p className="font-semibold">College ID: {result.studentId}</p>
 
         <hr className="my-4" />
 

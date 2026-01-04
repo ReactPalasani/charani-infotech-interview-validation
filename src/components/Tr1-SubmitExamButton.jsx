@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function SubmitExamButton() {
-  const { answers, questions, time } = useExam();
+  const { answers, questions, time, response, setResponse } = useExam();
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -13,7 +13,7 @@ export default function SubmitExamButton() {
     // 🔹 Student details from localStorage or form
     const studentName = StudentData.studentName || "Unknown";
     const studentEmail = StudentData.studentEmail || "Unknown";
-    const collegeId = StudentData.collegeId || "Unknown";
+    const studentId = StudentData.studentId || "Unknown";
     const collegeName = StudentData.collegeName || "Unknown";
 
     // 🔹 Calculate total and correct
@@ -38,7 +38,7 @@ export default function SubmitExamButton() {
     const resultData = {
       studentName,
       studentEmail,
-      collegeId,
+      studentId,
       collegeName,
       totalQuestions,
       correctAnswers,
@@ -58,14 +58,25 @@ export default function SubmitExamButton() {
 
       if (data.success) {
         localStorage.removeItem("exam-time");
-        alert("Exam submitted successfully!");
-        router.push("/tr-result");
+        setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold mt-6'> ✅ Exam submitted successfully!</div>);
+        setTimeout(() => {
+          setResponse("");
+          router.push("/tr-result");
+        }, 2000);
+
+
       } else {
-        alert('Exam Submition Failed');
+        setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold mt-6'> ❌ Exam Submition Failed</div>);
+        setTimeout(() => {
+          setResponse("");
+        }, 2000);
       }
     } catch (error) {
 
-      alert("Failed to submit exam.");
+      setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold mt-6'> ❌ Exam Submition Failed</div>);
+      setTimeout(() => {
+        setResponse("");
+      }, 2000);
     }
   };
 

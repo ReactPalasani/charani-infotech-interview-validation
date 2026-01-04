@@ -4,8 +4,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Header from "./Header";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function AdminLogin() {
+ 
+  const [response,setResponse]=useState();
+
   const router = useRouter();
 
   const validationSchema = Yup.object({
@@ -39,14 +43,17 @@ export default function AdminLogin() {
             "AdminLogin",
             JSON.stringify(data.data)
           );
-
-          alert("✅ Login successful");
-          router.push("/hr-portal");
+         setResponse( <div className='flex justify-center align-middle text-center text-green-800 font-bold'> Login successful</div>);
+         setTimeout(() => {
+           router.push("/hr-portal");
+         }, 2000);
+         
         } else {
-          alert("❌ " + data.message);
+          setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold'> {data.message}</div>);
+          setTimeout(()=>{setResponse("")},2000)
         }
       } catch (error) {
-        alert("❌ Server error");
+        setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold'> Server Error</div>);
       } finally {
         setSubmitting(false);
       }
@@ -59,7 +66,7 @@ export default function AdminLogin() {
       <div className="bg-blue-900 min-h-screen flex justify-center items-center">
         <div className="bg-white p-8 rounded shadow-md w-1/2">
           <h1 className="text-2xl font-bold mb-6 text-center">
-            Charani Info Tech Login
+            Admin Login
           </h1>
 
           <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
@@ -111,6 +118,7 @@ export default function AdminLogin() {
             >
               {formik.isSubmitting ? "Validating..." : "Login"}
             </button>
+            {response}
           </form>
         </div>
       </div>

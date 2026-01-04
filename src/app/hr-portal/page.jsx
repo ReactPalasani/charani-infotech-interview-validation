@@ -9,7 +9,7 @@ import Switch from "@/components/Switching-Exam-Result-Pannels";
 
 function HrPortal() {
   const [studentData, setStudentData] = useState([]);
-  const [collegeIdSearch, setCollegeIdSearch] = useState("");
+  const [studentIdSearch, setstudentIdSearch] = useState("");
   const [correctAnswersSearch, setCorrectAnswersSearch] = useState("");
   const router = useRouter();
  useEffect(
@@ -30,10 +30,10 @@ function HrPortal() {
         if (data.success) {
           // ✅ CORRECT flattening
           const flattened = Object.entries(data.data || {}).flatMap(
-            ([collegeId, collegeObj]) =>
+            ([studentId, collegeObj]) =>
               Object.entries(collegeObj).map(([resultId, value]) => ({
                 id: resultId,
-                collegeId,
+                studentId,
                 ...value,
               }))
           );
@@ -52,25 +52,25 @@ function HrPortal() {
   // 🔍 Filtering
   const filteredData = useMemo(() => {
     return studentData.filter(student => {
-      const matchCollegeId = collegeIdSearch
-        ? student.collegeId
+      const matchstudentId = studentIdSearch
+        ? student.studentId
             ?.toLowerCase()
-            .includes(collegeIdSearch.toLowerCase())
+            .includes(studentIdSearch.toLowerCase())
         : true;
 
       const matchCorrectAnswers = correctAnswersSearch
         ? Number(student.correctAnswers) === Number(correctAnswersSearch)
         : true;
 
-      return matchCollegeId && matchCorrectAnswers;
+      return matchstudentId && matchCorrectAnswers;
     });
-  }, [studentData, collegeIdSearch, correctAnswersSearch]);
+  }, [studentData, studentIdSearch, correctAnswersSearch]);
 
   // 📊 Columns
   const columns = [
     { name: "Name", selector: row => row.studentName, sortable: true },
     { name: "Email", selector: row => row.studentEmail, sortable: true },
-    { name: "College ID", selector: row => row.collegeId, sortable: true },
+    { name: "College ID", selector: row => row.studentId, sortable: true },
     { name: "College Name", selector: row => row.collegeName, sortable: true },
     { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
     { name: "Correct Answers", selector: row => row.correctAnswers, sortable: true },
@@ -80,7 +80,7 @@ function HrPortal() {
       cell: row => (
         <button
           onClick={() =>
-            router.push(`/hr-portal/${row.collegeId}/${row.id}`)
+            router.push(`/hr-portal/${row.studentId}/${row.id}`)
           }
           className="bg-blue-900 text-white px-3 py-1 rounded text-sm"
         >
@@ -103,8 +103,8 @@ function HrPortal() {
         <input
           type="text"
           placeholder="Search by College ID"
-          value={collegeIdSearch}
-          onChange={e => setCollegeIdSearch(e.target.value)}
+          value={studentIdSearch}
+          onChange={e => setstudentIdSearch(e.target.value)}
           className="border px-3 py-2 rounded w-64"
         />
 

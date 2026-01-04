@@ -5,7 +5,7 @@ import SubmitExamButton from "./SubmitExamButton";
 
 
 export default function QuestionPalette() {
-  const { questions, currentIndex, setCurrentIndex, answers, section } = useExam();
+  const { questions, currentIndex, setCurrentIndex, answers, section, response, setResponse } = useExam();
   const sectionAnswers = answers[section];
 
   return (

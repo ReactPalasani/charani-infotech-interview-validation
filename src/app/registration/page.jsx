@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ShieldCheck, Timer, CheckCircle, User, Mail, Phone, BookOpen, Building2, GraduationCap, History, ArrowRight, Calendar, RotateCcw } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email('Invalid email format').required('Email is required'),
-    collegeId: Yup.string().required('College ID is required')
+    studentId: Yup.string().required('Student ID is required')
     .max(12,'Maximum 12 letters')
     .min(10, 'Enter minimum 10 letters'),
     phone: Yup.string()
@@ -24,6 +24,7 @@ const validationSchema = Yup.object({
 
 export default function ExamPage() {
 
+    const [responce,setResponse]=useState();
     useEffect(()=>{
        localStorage.clear();
     },[])
@@ -33,7 +34,7 @@ export default function ExamPage() {
             name: "",
             email: "",
             phone: "",
-            collegeId: "",
+            studentId: "",
             collegeName: "",
             gender: "",
             branch: "",
@@ -52,14 +53,15 @@ export default function ExamPage() {
 
                 const data = await res.json();
                 if (data.success) {
+                    setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold'>{data.message} </div>);
                     localStorage.setItem('StudentData', JSON.stringify(values));
                     router.push("/instructions");
                 } else {
-                    alert('User Already Exist');
+                   setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold'> Student-Id Already Exists </div>);
                 }
             } catch (error) {
+                   setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold mt-5'> Student-Id Already Exists </div>);
 
-                alert('User Already Exist');
             }
         }
     });
@@ -121,12 +123,12 @@ export default function ExamPage() {
                                     className="p-2 border border-gray-300 rounded-lg focus:border-blue-900 outline-none" />
                                 {formik.touched.phone && formik.errors.phone && <div className='text-red-600 text-xs'>{formik.errors.phone}</div>}
                             </div>
-                            {/* College ID */}
+                            {/* Student ID */}
                             <div className="flex flex-col gap-1">
-                                <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><BookOpen className="w-4 h-4" /> Roll-No <span className='text-red-600'>*</span></label>
-                                <input id="collegeId" name="collegeId" type="text" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.collegeId} placeholder='Enter your college id' minLength={10} maxLength={12}
+                                <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><BookOpen className="w-4 h-4" /> Student-Id <span className='text-red-600'>*</span></label>
+                                <input id="studentId" name="studentId" type="text" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.studentId} placeholder='Enter your student id' minLength={10} maxLength={12}
                                     className="p-2 border border-gray-300 rounded-lg focus:border-blue-900 outline-none" />
-                                {formik.touched.collegeId && formik.errors.collegeId && <div className='text-red-600 text-xs'>{formik.errors.collegeId}</div>}
+                                {formik.touched.studentId && formik.errors.studentId && <div className='text-red-600 text-xs'>{formik.errors.studentId}</div>}
                             </div>
                         </div>
 
@@ -189,6 +191,7 @@ export default function ExamPage() {
                             </button>
                         </div>
                     </form>
+                    {responce}
                 </div>
             </div>
         </div>

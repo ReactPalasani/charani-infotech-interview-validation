@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const dbRef = ref(database, `JamResult/${body.collegeId}`);
+    const dbRef = ref(database, `JamResult/${body.studentId}`);
     const newUserRef = push(dbRef);
 
     await set(newUserRef, body);

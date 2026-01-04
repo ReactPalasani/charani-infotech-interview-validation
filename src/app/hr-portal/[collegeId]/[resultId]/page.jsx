@@ -18,6 +18,8 @@ export default function StudentDetailsPage() {
   const [selectorName, setSelectorName] = useState("");
   const [select, setSelect] = useState(false); // optional
 
+  const[responce,setResponse]=useState();
+
    useEffect(
   ()=>{
      const admin=  JSON.parse( localStorage.getItem('AdminLogin'));
@@ -62,7 +64,7 @@ export default function StudentDetailsPage() {
     const payload = {
       studentName: student.studentName,
       studentEmail: student.studentEmail,
-      collegeId: student.collegeId,
+      studentId: student.studentId,
       collegeName: student.collegeName,
       totalQuestions: student.totalQuestions,
       correctAnswers: student.correctAnswers,
@@ -83,10 +85,17 @@ export default function StudentDetailsPage() {
 
       const data = await res.json();
       if (data.success) {
-        alert("Data submitted successfully!");
-        router.back(); // optional: go back after submit
+     setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold mt-6'> Data submitted successfully!</div>);
+     setTimeout(()=>{
+      setResponse("");
+       router.back();
+     },2000);
+        // optional: go back after submit
       } else {
-        alert("user already exist.");
+             setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold mt-6'> Student already exist.</div>);
+             setTimeout(() => {
+               setResponse("");
+             }, 2000);
       }
     } catch (error) {
 
@@ -153,7 +162,7 @@ export default function StudentDetailsPage() {
             <div className="space-y-2">
               <p><strong>Name:</strong> {student.studentName}</p>
               <p><strong>Email:</strong> {student.studentEmail}</p>
-              <p><strong>College ID:</strong> {student.collegeId}</p>
+              <p><strong>College ID:</strong> {student.studentId}</p>
               <p><strong>College Name:</strong> {student.collegeName}</p>
               <p><strong>Total Questions:</strong> {student.totalQuestions}</p>
               <p><strong>Correct Answers:</strong> {student.correctAnswers}</p>
@@ -225,6 +234,7 @@ export default function StudentDetailsPage() {
             </div>
           </div>
         </div>
+        {responce}
       </div>
     </div>
   );

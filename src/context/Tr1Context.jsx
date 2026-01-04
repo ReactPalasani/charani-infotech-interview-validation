@@ -10,7 +10,7 @@ export function ExamProvider({ children }) {
   const [section, setSection] = useState("Html");
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const[response, setResponse]= useState();
   const [answers, setAnswers] = useState({
     Html: {},
     Css3: {},
@@ -181,6 +181,8 @@ useEffect(() => {
         setAnswers,
         time,
         setTime,
+        response,
+        setResponse
       }}
     >
       {children}

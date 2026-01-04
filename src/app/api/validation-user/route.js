@@ -3,26 +3,26 @@ import { db } from "@/lib/firebaseAdmin"; // ✅ Use Admin SDK
 
 export async function POST(req) {
   try {
-    const { collegeId, email } = await req.json();
+    const { studentId, email } = await req.json();
 
-    if (!collegeId || !email) {
+    if (!studentId || !email) {
       return NextResponse.json(
-        { success: false, message: "collegeId and email required" },
+        { success: false, message: "studentId and email required" },
         { status: 400 }
       );
     }
      
-      const snapshot1 = await db.ref(`Technical-1-Results/${collegeId}`).once("value");
+      const snapshot1 = await db.ref(`Technical-1-Results/${studentId}`).once("value");
 
       if (snapshot1.exists()) {
       return NextResponse.json({
         success: false,
-        message: "User Already Exist",
+        message: "Data Already Exist",
       });
     }
 
     // 🔹 Fetch college data
-    const snapshot = await db.ref(`Tr1Result/${collegeId}`).once("value");
+    const snapshot = await db.ref(`Tr1Result/${studentId}`).once("value");
 
     if (!snapshot.exists()) {
       return NextResponse.json({
@@ -58,7 +58,7 @@ export async function POST(req) {
         studentName: userData.studentName,
         collegeName: userData.collegeName,
         selectorName: userData.selectorName,
-        collegeId : userData.collegeId,
+        studentId : userData.studentId,
         studentEmail:userData.studentEmail
       },
     });

@@ -4,12 +4,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Header from "./Header";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 function UserValidation() {
   const router = useRouter();
-
+const [responce, setResponse] = useState();
   const validationSchema = Yup.object({
-    collegeId: Yup.string()
+    studentId: Yup.string()
       .required("College ID is required")
       .min(10, "Minimum 10 characters")
       .max(12, "Maximum 12 characters"),
@@ -20,7 +21,7 @@ function UserValidation() {
 
   const formik = useFormik({
     initialValues: {
-      collegeId: "",
+      studentId: "",
       email: "",
     },
     validationSchema,
@@ -30,7 +31,7 @@ function UserValidation() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          collegeId: values.collegeId,
+          studentId: values.studentId,
           email: values.email,
         }),
       });
@@ -40,10 +41,18 @@ function UserValidation() {
 
       if (data.success) {
        localStorage.setItem("StudentData", JSON.stringify(data.data));
-        alert("✅ Allowed to attend Technical Round");
-        router.push("/technical-round-1");
+            setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold mt-6'> ✅ Allowed to attend Technical Round</div>);
+    setTimeout(() => {
+              router.push("/technical-round-1");
+              setResponse("");
+    }, 2000);
+
       } else {
-        alert("❌ " + data.message);
+                    setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold mt-6'> ❌ {data.message} </div>);
+
+                    setTimeout(() => {
+                      setResponse("");
+                    }, 2000);
       }
 
     },
@@ -63,19 +72,19 @@ function UserValidation() {
             <div className="flex flex-col gap-1">
               <label className="font-semibold">Roll-No</label>
               <input
-                name="collegeId"
+                name="studentId"
                 type="text"
                 maxLength={12}
                 placeholder="Enter Your Roll No"
-                {...formik.getFieldProps("collegeId")}
-                className={`p-2 border rounded ${formik.touched.collegeId && formik.errors.collegeId
+                {...formik.getFieldProps("studentId")}
+                className={`p-2 border rounded ${formik.touched.studentId && formik.errors.studentId
                     ? "border-red-500"
                     : "border-gray-300"
                   }`}
               />
-              {formik.touched.collegeId && formik.errors.collegeId && (
+              {formik.touched.studentId && formik.errors.studentId && (
                 <p className="text-red-600 text-sm">
-                  {formik.errors.collegeId}
+                  {formik.errors.studentId}
                 </p>
               )}
             </div>
@@ -108,6 +117,7 @@ function UserValidation() {
               {formik.isSubmitting ? "Validating..." : "Submit"}
             </button>
           </form>
+          {responce}
         </div>
       </div>
     </>

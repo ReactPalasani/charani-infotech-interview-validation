@@ -7,9 +7,12 @@ import { View } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 function HrPortal_Exam() {
+  const[response, setResponse]=useState();
   const [studentData, setStudentData] = useState([]);
-  const [collegeIdSearch, setCollegeIdSearch] = useState("");
+  const [studentIdSearch, setstudentIdSearch] = useState("");
   const [correctAnswersSearch, setCorrectAnswersSearch] = useState("");
+   const [collgeNameSearch, setCollegeNameSearch] = useState("");
+   const [percentageSearch, setPercentageSearch] = useState("");
   const router = useRouter();
 
    useEffect(
@@ -30,10 +33,10 @@ function HrPortal_Exam() {
         if (data.success) {
           // ✅ CORRECT flattening
           const flattened = Object.entries(data.data || {}).flatMap(
-            ([collegeId, collegeObj]) =>
+            ([studentId, collegeObj]) =>
               Object.entries(collegeObj).map(([resultId, value]) => ({
                 id: resultId,
-                collegeId,
+                studentId,
                 ...value,
               }))
           );
@@ -41,8 +44,8 @@ function HrPortal_Exam() {
           setStudentData(flattened);
         }
       } catch (error) {
+         setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold mt-6'> Error fetching users</div>);
 
-        alert("Error fetching users");
       }
     };
 
@@ -50,37 +53,56 @@ function HrPortal_Exam() {
   }, []);
 
   // 🔍 Filtering
-  const filteredData = useMemo(() => {
-    return studentData.filter(student => {
-      const matchCollegeId = collegeIdSearch
-        ? student.collegeId
-            ?.toLowerCase()
-            .includes(collegeIdSearch.toLowerCase())
-        : true;
+ const filteredData = useMemo(() => {
+  return studentData.filter(student => {
+    const matchStudentId = studentIdSearch
+      ? student.studentId?.toLowerCase().includes(studentIdSearch.toLowerCase())
+      : true;
 
-      const matchCorrectAnswers = correctAnswersSearch
-        ? Number(student.correctAnswers) === Number(correctAnswersSearch)
-        : true;
+    const matchCollege = collgeNameSearch
+      ? student.collegeName?.toLowerCase().includes(collgeNameSearch.toLowerCase())
+      : true;
 
-      return matchCollegeId && matchCorrectAnswers;
-    });
-  }, [studentData, collegeIdSearch, correctAnswersSearch]);
+    const matchCorrectAnswers = correctAnswersSearch
+      ? Number(student.correctAnswers) === Number(correctAnswersSearch)
+      : true;
+
+    const matchPercentage = percentageSearch
+      ? String(student.percentage).includes(percentageSearch)
+      : true;
+
+    return (
+      matchStudentId &&
+      matchCollege &&
+      matchCorrectAnswers &&
+      matchPercentage
+    );
+  });
+}, [
+  studentData,
+  studentIdSearch,
+  collgeNameSearch,
+  correctAnswersSearch,
+  percentageSearch,
+]);
+
 
   // 📊 Columns
   const columns = [
     { name: "Name", selector: row => row.studentName, sortable: true },
     { name: "Email", selector: row => row.studentEmail, sortable: true },
-    { name: "College ID", selector: row => row.collegeId, sortable: true },
+    { name: "Student ID", selector: row => row.studentId, sortable: true },
     { name: "College Name", selector: row => row.collegeName, sortable: true },
     { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
     { name: "Correct Answers", selector: row => row.correctAnswers, sortable: true },
+    { name: "percentage", selector: row => row.percentage, sortable: true },
     { name: "Submitted At", selector: row => row.submittedAt, sortable: true },
     {
       name: "Action",
       cell: row => (
         <button
           onClick={() =>
-            router.push(`/hr-portal/${row.collegeId}/${row.id}`)
+            router.push(`/hr-portal/${row.studentId}/${row.id}`)
           }
           className="bg-blue-900 text-white px-3 py-1 rounded text-sm"
         >
@@ -94,27 +116,48 @@ function HrPortal_Exam() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">
-        HR Portal - Student Records
+        Aptitude Result
       </h1>
 
       {/* Filters */}
-      <div className="flex gap-4 mb-4">
-        <input
-          type="text"
-          placeholder="Search by College ID"
-          value={collegeIdSearch}
-          onChange={e => setCollegeIdSearch(e.target.value)}
-          className="border px-3 py-2 rounded w-64"
-        />
+     <div className="flex gap-4 mb-4 flex-wrap">
 
         <input
-          type="number"
-          placeholder="Search by Correct Answers"
-          value={correctAnswersSearch}
-          onChange={e => setCorrectAnswersSearch(e.target.value)}
-          className="border px-3 py-2 rounded w-64"
-        />
-      </div>
+    type="text"
+    placeholder="Search By College Name"
+    value={collgeNameSearch}
+    onChange={e => setCollegeNameSearch(e.target.value)}
+    className="border px-3 py-2 rounded w-64"
+    autoFocus
+  />
+
+  <input
+    type="text"
+    placeholder="Search By Student ID"
+    value={studentIdSearch}
+    onChange={e => setstudentIdSearch(e.target.value)}
+    className="border px-3 py-2 rounded w-64"
+  />
+
+
+  <input
+    type="number"
+    placeholder="Search By Correct Answers"
+    value={correctAnswersSearch}
+    onChange={e => setCorrectAnswersSearch(e.target.value)}
+    className="border px-3 py-2 rounded w-64"
+  />
+
+  <input
+    type="text"
+    placeholder="Search By Percentage"
+    value={percentageSearch}
+    onChange={e => setPercentageSearch(e.target.value)}
+    className="border px-3 py-2 rounded w-64"
+  />
+
+</div>
+
 
       <DataTable
         columns={columns}
@@ -124,7 +167,9 @@ function HrPortal_Exam() {
         striped
         responsive
       />
+      {response}
     </div>
+    
   );
 }
 

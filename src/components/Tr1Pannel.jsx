@@ -13,6 +13,8 @@ export default function ExamPanel() {
     setCurrentIndex,
     answers,
     setAnswers,
+    response,
+    setResponse
   } = useExam();
 
   const question = questions[currentIndex];
@@ -47,7 +49,11 @@ export default function ExamPanel() {
       setCurrentIndex(0);
     } else {
       // ✅ Exam finished
-      alert("Exam completed");
+                  setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold mt-6'> ✅ You have reached to the end</div>);
+           
+         setTimeout(() => {
+          setResponse("");
+         }, 2000);
       // router.push("/result") later
     }
   };
@@ -85,6 +91,7 @@ export default function ExamPanel() {
         >
           {isLastQuestion ? "Next Section" : "Next"}
         </button>
+        {response}
       </div>
     </div>
   );

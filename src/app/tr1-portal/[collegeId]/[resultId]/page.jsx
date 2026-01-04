@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import { MessagesSquare, NotepadText, PencilLine } from "lucide-react";
 
 export default function StudentDetailsPage() {
-  const { resultId,collegeId } = useParams();
+  const { resultId,studentId } = useParams();
   const router = useRouter();
   const [student, setStudent] = useState(null);
 
@@ -38,7 +38,7 @@ useEffect(() => {
 
       if (!data.success || !data.data) return;
 
-      const collegeResults = data.data[collegeId];
+      const collegeResults = data.data[studentId];
 
       // ❌ No data for this college
       if (!collegeResults) {
@@ -64,7 +64,7 @@ useEffect(() => {
   };
 
   fetchDetails();
-}, [collegeId, resultId]);
+}, [studentId, resultId]);
 
   if (!student) {
   return (
@@ -79,7 +79,7 @@ useEffect(() => {
     const payload = {
       studentName: student.studentName,
       studentEmail: student.studentEmail,
-      collegeId: student.collegeId,
+      studentId: student.studentId,
       collegeName: student.collegeName,
       totalQuestions: student.totalQuestions,
       correctAnswers: student.correctAnswers,
@@ -169,7 +169,7 @@ useEffect(() => {
             <div className="space-y-2">
               <p><strong>Name:</strong> {student.studentName}</p>
               <p><strong>Email:</strong> {student.studentEmail}</p>
-              <p><strong>College ID:</strong> {student.collegeId}</p>
+              <p><strong>College ID:</strong> {student.studentId}</p>
               <p><strong>College Name:</strong> {student.collegeName}</p>
               <p><strong>Total Questions:</strong> {student.totalQuestions}</p>
               <p><strong>Correct Answers:</strong> {student.correctAnswers}</p>

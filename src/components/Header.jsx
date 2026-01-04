@@ -23,7 +23,7 @@ function Header() {
 
       {student && (
         <h1>
-          <span className="font-bold">Candidate:</span> {student.collegeId}
+          <span className="font-bold">Candidate:</span> {student.studentId}
         </h1>
       )}
     </header>

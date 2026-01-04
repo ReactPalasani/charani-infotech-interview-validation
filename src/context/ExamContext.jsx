@@ -6,7 +6,7 @@ import React, { useRef } from "react";
 const ExamContext = createContext(null);
 
 export function ExamProvider({ children }) {
-
+  const [response,setResponse]=useState();
   const [section, setSection] = useState("Aptitude");
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -171,6 +171,8 @@ useEffect(() => {
 
     <ExamContext.Provider
       value={{
+        response,
+        setResponse,
         section,
         setSection,
         questions,

@@ -7,14 +7,16 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const dbRef = ref(database, `users/${body.collegeId}`);
+    console.log("student Id", body);
+
+    const dbRef = ref(database, `users/${body.studentId}`);
     const newUserRef = push(dbRef);
 
     await set(newUserRef, body);
 
     return NextResponse.json({
       success: true,
-      message: "User saved successfully",
+      message: "Successfully Registred",
     });
   } catch (error) {
     return NextResponse.json(
