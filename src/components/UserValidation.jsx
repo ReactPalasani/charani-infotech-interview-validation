@@ -3,106 +3,113 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Header from "./Header";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 function UserValidation() {
-    const validationSchema = Yup.object({
-        collegeId: Yup.string()
-            .required("College ID is required")
-            .min(10, "Minimum 10 characters")
-            .max(12, "Maximum 12 characters"),
-        email: Yup.string()
-            .email("Invalid email format")
-            .required("Email is required"),
-    });
-    useEffect( async() => {
-        try {
-                const res = await fetch('/api/users', {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(values),
-                });
+  const router = useRouter();
 
+  const validationSchema = Yup.object({
+    collegeId: Yup.string()
+      .required("College ID is required")
+      .min(10, "Minimum 10 characters")
+      .max(12, "Maximum 12 characters"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+  });
 
-                const data = await res.json();
-                if (data.success) {
-                    localStorage.setItem('StudentData', JSON.stringify(values));
-                    router.push("/instructions");
-                } else {
-                    alert('User Already Exist');
-                }
-            } catch (error) {
-                console.error(error);
-                alert('User Already Exist');
-            }
-    },[])
-    const formik = useFormik({
-        initialValues: {
-            collegeId: "",
-            email: "",
-        },
-        validationSchema,
-        onSubmit: async (values) => {
+  const formik = useFormik({
+    initialValues: {
+      collegeId: "",
+      email: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      console.log("enterd");
+      const res = await fetch("/api/validation-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          collegeId: values.collegeId,
+          email: values.email,
+        }),
+      });
 
-        },
-    });
+      const data = await res.json();
 
-    return (
-        <>
-            <Header />
-            <div className="bg-gray-100 min-h-screen flex justify-center items-center">
-                <div className="bg-white p-8 rounded shadow-md w-1/2">
-                    <h1 className="text-2xl font-bold mb-6 text-center">Technical Round Validation</h1>
-                    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-1">
-                            <label htmlFor="collegeId" className="font-semibold">Roll-No</label>
-                            <input
-                                id="collegeId"
-                                name="collegeId"
-                                type="text"
-                                maxLength={12}
-                                minLength={10}
-                                placeholder="Enter Your Roll No"
-                                value={formik.values.collegeId}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                className={`p-2 border rounded outline-none ${formik.touched.collegeId && formik.errors.collegeId ? "border-red-500" : "border-gray-300"
-                                    }`}
-                            />
-                            {formik.touched.collegeId && formik.errors.collegeId && (
-                                <div className="text-red-600 text-sm">{formik.errors.collegeId}</div>
-                            )}
-                        </div>
+      if (data.success) {
+        alert("✅ Allowed to attend Technical Round");
+        router.push("/technical-round-1");
+      } else {
+        alert("❌ " + data.message);
+      }
 
-                        <div className="flex flex-col gap-1">
-                            <label htmlFor="email" className="font-semibold">Email</label>
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                placeholder="Enter Your Email"
-                                value={formik.values.email}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                className={`p-2 border rounded outline-none ${formik.touched.email && formik.errors.email ? "border-red-500" : "border-gray-300"
-                                    }`}
-                            />
-                            {formik.touched.email && formik.errors.email && (
-                                <div className="text-red-600 text-sm">{formik.errors.email}</div>
-                            )}
-                        </div>
+    },
+  });
 
-                        <button
-                            type="submit"
-                            className="bg-blue-900 text-white py-2 rounded font-bold mt-4 hover:bg-blue-800 transition"
-                        >
-                            Submit
-                        </button>
-                    </form>
-                </div>
+  return (
+    <>
+      <Header />
+      <div className="bg-blue-900 min-h-screen flex justify-center items-center">
+        <div className="bg-white p-8 rounded shadow-md w-1/2">
+          <h1 className="text-2xl font-bold mb-6 text-center">
+            Technical Round Validation
+          </h1>
+
+          <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
+            {/* Roll No */}
+            <div className="flex flex-col gap-1">
+              <label className="font-semibold">Roll-No</label>
+              <input
+                name="collegeId"
+                type="text"
+                maxLength={12}
+                placeholder="Enter Your Roll No"
+                {...formik.getFieldProps("collegeId")}
+                className={`p-2 border rounded ${formik.touched.collegeId && formik.errors.collegeId
+                    ? "border-red-500"
+                    : "border-gray-300"
+                  }`}
+              />
+              {formik.touched.collegeId && formik.errors.collegeId && (
+                <p className="text-red-600 text-sm">
+                  {formik.errors.collegeId}
+                </p>
+              )}
             </div>
-        </>
-    );
+
+            {/* Email */}
+            <div className="flex flex-col gap-1">
+              <label className="font-semibold">Email</label>
+              <input
+                name="email"
+                type="email"
+                placeholder="Enter Your Email"
+                {...formik.getFieldProps("email")}
+                className={`p-2 border rounded ${formik.touched.email && formik.errors.email
+                    ? "border-red-500"
+                    : "border-gray-300"
+                  }`}
+              />
+              {formik.touched.email && formik.errors.email && (
+                <p className="text-red-600 text-sm">
+                  {formik.errors.email}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={formik.isSubmitting}
+              className="bg-blue-900 text-white py-2 rounded font-bold mt-4 hover:bg-blue-800 disabled:opacity-50"
+            >
+              {formik.isSubmitting ? "Validating..." : "Submit"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default UserValidation;

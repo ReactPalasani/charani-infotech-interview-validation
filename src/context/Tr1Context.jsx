@@ -3,18 +3,19 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { shuffleQuestion } from "@/app/utils/shuffleQuestion";
 import { shuffleArray } from "@/app/utils/shuffle";
 import React, { useRef } from "react";
-const ExamContext = createContext(null);
+const ExamContext1 = createContext(null);
 
 export function ExamProvider({ children }) {
 
-  const [section, setSection] = useState("Aptitude");
+  const [section, setSection] = useState("Html");
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [answers, setAnswers] = useState({
-    Aptitude: {},
-    Reasoning: {},
-    Communication: {},
+    Html: {},
+    Css3: {},
+    Javascript: {},
+    Java:{}
   });
 
   // ⏱ timer (persist)
@@ -168,7 +169,7 @@ useEffect(() => {
         Go Full Screen
       </button>
 
-    <ExamContext.Provider
+    <ExamContext1.Provider
       value={{
         section,
         setSection,
@@ -183,13 +184,13 @@ useEffect(() => {
       }}
     >
       {children}
-    </ExamContext.Provider>
+    </ExamContext1.Provider>
         </div>
   );
 }
 
 export function useExam() {
-  const ctx = useContext(ExamContext);
+  const ctx = useContext(ExamContext1);
   if (!ctx) throw new Error("useExam must be inside ExamProvider");
   return ctx;
 }
