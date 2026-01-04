@@ -11,6 +11,15 @@ export async function POST(req) {
         { status: 400 }
       );
     }
+     
+      const snapshot1 = await db.ref(`Technical-1-Results/${collegeId}`).once("value");
+
+      if (snapshot1.exists()) {
+      return NextResponse.json({
+        success: false,
+        message: "User Already Exist",
+      });
+    }
 
     // 🔹 Fetch college data
     const snapshot = await db.ref(`Tr1Result/${collegeId}`).once("value");
