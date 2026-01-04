@@ -18,6 +18,15 @@ export default function StudentDetailsPage() {
   const [selectorName, setSelectorName] = useState("");
   const [select, setSelect] = useState(false); // optional
 
+   useEffect(
+  ()=>{
+     const admin=  JSON.parse( localStorage.getItem('AdminLogin'));
+     if(!admin){
+      router.push('/admin');
+     }
+  },[]
+ );
+
   useEffect(() => {
     const fetchDetails = async () => {
       try {

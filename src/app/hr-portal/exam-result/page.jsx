@@ -12,6 +12,15 @@ function HrPortal_Exam() {
   const [correctAnswersSearch, setCorrectAnswersSearch] = useState("");
   const router = useRouter();
 
+   useEffect(
+  ()=>{
+     const admin=  JSON.parse( localStorage.getItem('AdminLogin'));
+     if(!admin){
+      router.push('/admin');
+     }
+  },[]
+ );
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
