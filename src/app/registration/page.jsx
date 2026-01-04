@@ -10,13 +10,13 @@ const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email('Invalid email format').required('Email is required'),
     studentId: Yup.string().required('Student ID is required')
-    .max(12,'Maximum 12 letters')
-    .min(10, 'Enter minimum 10 letters'),
+        .max(12, 'Maximum 12 letters')
+        .min(10, 'Enter minimum 10 letters'),
     phone: Yup.string()
         .matches(/^[6-9][0-9]{9}$/, 'Phone number must start with 6, 7, 8, or 9 and be 10 digits')
         .required('Phone number is required'),
     collegeName: Yup.string().required('College Name is required'),
-    gender: Yup.string().required('Gender is required') .oneOf(['male', 'female', 'other'], 'Please select a valid gender'),
+    gender: Yup.string().required('Gender is required').oneOf(['male', 'female', 'other'], 'Please select a valid gender'),
     branch: Yup.string().required('Branch is required'),
     year: Yup.string().required('Year is required'),
     backLogs: Yup.number().min(0, 'Cannot be negative').required('Required'),
@@ -24,10 +24,7 @@ const validationSchema = Yup.object({
 
 export default function ExamPage() {
 
-    const [responce,setResponse]=useState();
-    useEffect(()=>{
-       localStorage.clear();
-    },[])
+    const [responce, setResponse] = useState();
     const router = useRouter();
     const formik = useFormik({
         initialValues: {
@@ -55,12 +52,15 @@ export default function ExamPage() {
                 if (data.success) {
                     setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold'>{data.message} </div>);
                     localStorage.setItem('StudentData', JSON.stringify(values));
-                    router.push("/instructions");
+                    setTimeout(() => {
+                       router.push("/instructions");
+                    },2000);
+
                 } else {
-                   setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold'> Student-Id Already Exists </div>);
+                    setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold'> Student-Id Already Exists </div>);
                 }
             } catch (error) {
-                   setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold mt-5'> Student-Id Already Exists </div>);
+                setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold mt-5'> Student-Id Already Exists </div>);
 
             }
         }
@@ -154,16 +154,16 @@ export default function ExamPage() {
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><GraduationCap className="w-4 h-4" />Branch <span className='text-red-600'>*</span></label>
                                 <select name="branch" onChange={formik.handleChange} value={formik.values.branch} className="p-2 border border-gray-300 rounded-lg outline-none">
-                                     <option>select Branch</option>
-                                    <option value="aiml">AI/ML</option><option value="cse">CSE</option><option value="civil">CIVIL</option><option value="ece">ECE</option><option value="mech">Mech</option><option value="eee">EEE</option>
+                                    <option>select Branch</option>
+                                    <option value="aiml">AI/ML</option><option value="cse">CSE</option><option value="civil">CIVIL</option><option value="ece">ECE</option><option value="mech">Mech</option><option value="eee">EEE</option><option value="it">IT</option>
                                 </select>
-                                { formik.touched.branch && formik.errors.branch && <div className='text-red-600 text-xs'>{formik.errors.branch}</div>}
+                                {formik.touched.branch && formik.errors.branch && <div className='text-red-600 text-xs'>{formik.errors.branch}</div>}
                             </div>
                             {/* Year */}
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><Calendar className="w-4 h-4" /> Year <span className='text-red-600'>*</span></label>
                                 <select name="year" onChange={formik.handleChange} value={formik.values.year} className="p-2 border border-gray-300 rounded-lg outline-none">
-                                   <option >select Year</option>
+                                    <option >select Year</option>
                                     <option value="1">1st Year</option><option value="2">2nd Year</option><option value="3">3rd Year</option><option value="4">4th Year</option>
                                 </select>
                                 {formik.touched.year && formik.errors.year && <div className='text-red-600 text-xs'>{formik.errors.year}</div>}

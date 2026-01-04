@@ -12,8 +12,9 @@ function Header() {
 
     useEffect(() => {
     const data = localStorage.getItem("AdminLogin");
-    if (data) setAdmin(JSON.parse(data));
+    if (data){ setAdmin(JSON.parse(data))
     localStorage.removeItem("StudentData");
+    }
   }, []);
 
 const handleLogout=()=>{
