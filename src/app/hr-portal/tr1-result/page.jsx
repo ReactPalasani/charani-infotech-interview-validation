@@ -107,7 +107,7 @@ const filteredData = useMemo(() => {
   const columns = [
     { name: "Name", selector: row => row.studentName, sortable: true },
     { name: "Email", selector: row => row.studentEmail, sortable: true },
-    { name: "College ID", selector: row => row.studentId, sortable: true },
+    { name: "Student ID", selector: row => row.studentId, sortable: true },
     { name: "College Name", selector: row => row.collegeName, sortable: true },
     { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
     { name: "Correct Answers", selector: row => row.correctAnswers, sortable: true },
