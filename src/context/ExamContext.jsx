@@ -153,7 +153,8 @@ useEffect(() => {
       }
 
     } catch (err) {
-      console.error("Fullscreen failed:", err);
+    
+
     }
   };
 

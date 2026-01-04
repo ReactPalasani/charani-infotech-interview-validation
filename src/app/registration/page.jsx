@@ -58,7 +58,7 @@ export default function ExamPage() {
                     alert('User Already Exist');
                 }
             } catch (error) {
-                console.error(error);
+
                 alert('User Already Exist');
             }
         }
@@ -153,7 +153,7 @@ export default function ExamPage() {
                                 <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><GraduationCap className="w-4 h-4" />Branch <span className='text-red-600'>*</span></label>
                                 <select name="branch" onChange={formik.handleChange} value={formik.values.branch} className="p-2 border border-gray-300 rounded-lg outline-none">
                                      <option>select Branch</option>
-                                    <option value="aiml">AI/ML</option><option value="cse">CSE</option><option value="civil">CIVIL</option><option value="ece">ECE</option>
+                                    <option value="aiml">AI/ML</option><option value="cse">CSE</option><option value="civil">CIVIL</option><option value="ece">ECE</option><option value="mech">Mech</option><option value="eee">EEE</option>
                                 </select>
                                 { formik.touched.branch && formik.errors.branch && <div className='text-red-600 text-xs'>{formik.errors.branch}</div>}
                             </div>

@@ -25,7 +25,7 @@ function UserValidation() {
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log("enterd");
+
       const res = await fetch("/api/validation-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -37,7 +37,9 @@ function UserValidation() {
 
       const data = await res.json();
 
+
       if (data.success) {
+       localStorage.setItem("StudentData", JSON.stringify(data.data));
         alert("✅ Allowed to attend Technical Round");
         router.push("/technical-round-1");
       } else {

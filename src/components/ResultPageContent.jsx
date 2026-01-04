@@ -36,7 +36,7 @@ export default function ResultPageContent() {
 
         setResult(studentResult);
       } catch (error) {
-        console.error(error);
+
       }
     };
 

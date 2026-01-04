@@ -24,15 +24,12 @@ export default function SubmitExamButton() {
 
     Object.keys(answers).forEach((section) => {
       const sectionQs = questions; // your questions array for this section
-      console.log("Evaluating section:", section);
+
       const sectionAns = answers[section];
-      console.log("Section:", section);
-      console.log("Section Questions:", sectionQs);
-      console.log("Section Answers:", sectionAns);
 
       sectionQs.forEach((q, idx) => {
         totalQuestions++;
-        if (sectionAns[idx] === q.Answer) { correctAnswers++; console.log("Correct answer for question",); }
+        if (sectionAns[idx] === q.Answer) { correctAnswers++;  }
       });
     });
 
@@ -67,7 +64,7 @@ export default function SubmitExamButton() {
         alert('Exam Submition Failed');
       }
     } catch (error) {
-      console.error(error);
+
       alert("Failed to submit exam.");
     }
   };

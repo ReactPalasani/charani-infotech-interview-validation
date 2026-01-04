@@ -27,9 +27,11 @@ export async function POST(req) {
 
     snapshot.forEach((child) => {
       const data = child.val();
+
       if (data.studentEmail === email && data.select === true) {
         isEligible = true;
         userData = data;
+
       }
     });
 
@@ -47,10 +49,12 @@ export async function POST(req) {
         studentName: userData.studentName,
         collegeName: userData.collegeName,
         selectorName: userData.selectorName,
+        collegeId : userData.collegeId,
+        studentEmail:userData.studentEmail
       },
     });
   } catch (error) {
-    console.error("Validation Error:", error);
+
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 }

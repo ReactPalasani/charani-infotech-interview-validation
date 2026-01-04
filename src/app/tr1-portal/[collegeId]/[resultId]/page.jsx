@@ -10,7 +10,7 @@ export default function StudentDetailsPage() {
   const { resultId,collegeId } = useParams();
   const router = useRouter();
   const [student, setStudent] = useState(null);
- console.log(" resultid",resultId);
+
 
   // Controlled form state
   const [feedback, setFeedback] = useState("");
@@ -24,9 +24,9 @@ useEffect(() => {
     try {
       const res = await fetch("/api/result");
       const data = await res.json();
-      console.log("data",data.data);
+
       
-       console.log("data1",data.data[collegeId])
+
       if (!data.success || !data.data) return;
 
       const collegeResults = data.data[collegeId];
@@ -50,14 +50,13 @@ useEffect(() => {
 
       setStudent(found || null);
     } catch (error) {
-      console.error(error);
+
     }
   };
 
   fetchDetails();
 }, [collegeId, resultId]);
 
-      console.log("student", student)
   if (!student) {
   return (
     <div className="p-6 text-center text-red-600">
@@ -96,7 +95,7 @@ useEffect(() => {
         alert("user already exist.");
       }
     } catch (error) {
-      console.error(error);
+
     }
   };
 

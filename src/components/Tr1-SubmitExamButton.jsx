@@ -11,8 +11,8 @@ export default function SubmitExamButton() {
     if (!confirm("Are you sure you want to submit the exam?")) return;
     const StudentData = JSON.parse(localStorage.getItem("StudentData")) || {};
     // 🔹 Student details from localStorage or form
-    const studentName = StudentData.name || "Unknown";
-    const studentEmail = StudentData.email || "Unknown";
+    const studentName = StudentData.studentName || "Unknown";
+    const studentEmail = StudentData.studentEmail || "Unknown";
     const collegeId = StudentData.collegeId || "Unknown";
     const collegeName = StudentData.collegeName || "Unknown";
 
@@ -22,15 +22,13 @@ export default function SubmitExamButton() {
 
     Object.keys(answers).forEach((section) => {
       const sectionQs = questions; // your questions array for this section
-      console.log("Evaluating section:", section);
+
       const sectionAns = answers[section];
-      console.log("Section:", section);
-      console.log("Section Questions:", sectionQs);
-      console.log("Section Answers:", sectionAns);
+
 
       sectionQs.forEach((q, idx) => {
         totalQuestions++;
-        if (sectionAns[idx] === q.Answer) { correctAnswers++; console.log("Correct answer for question",); }
+        if (sectionAns[idx] === q.Answer) { correctAnswers++; }
       });
     });
 
@@ -57,8 +55,8 @@ export default function SubmitExamButton() {
       });
 
       const data = await res.json();
+
       if (data.success) {
-        localStorage.setItem("StudentData",data.data); 
         localStorage.removeItem("exam-time");
         alert("Exam submitted successfully!");
         router.push("/tr-result");
@@ -66,7 +64,7 @@ export default function SubmitExamButton() {
         alert('Exam Submition Failed');
       }
     } catch (error) {
-      console.error(error);
+
       alert("Failed to submit exam.");
     }
   };

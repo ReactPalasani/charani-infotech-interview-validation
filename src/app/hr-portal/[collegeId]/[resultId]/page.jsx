@@ -37,7 +37,7 @@ export default function StudentDetailsPage() {
         const found = flattened.find(item => item.id === resultId);
         setStudent(found);
       } catch (error) {
-        console.error(error);
+
       }
     };
 
@@ -80,7 +80,7 @@ export default function StudentDetailsPage() {
         alert("user already exist.");
       }
     } catch (error) {
-      console.error(error);
+
     }
   };
 

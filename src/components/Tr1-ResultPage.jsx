@@ -12,7 +12,7 @@ export default function ResultPageContent() {
   useEffect(() => {
     const studentData = JSON.parse(localStorage.getItem("StudentData"));
 
-    if (!studentData?.email) {
+    if (!studentData?.studentEmail) {
       router.replace("/registration");
       return;
     }
@@ -29,14 +29,14 @@ export default function ResultPageContent() {
         );
 
         const studentResult = allResults
-          .filter(r => r.studentEmail === studentData.email)
+          .filter(r => r.studentEmail === studentData.studentEmail)
           .sort(
             (a, b) => new Date(b.submittedAt) - new Date(a.submittedAt)
           )[0];
 
         setResult(studentResult);
       } catch (error) {
-        console.error(error);
+
       }
     };
 

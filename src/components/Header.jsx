@@ -18,7 +18,7 @@ function Header() {
           alt="Charani logo"
           className="border border-white rounded-full"
         />
-        <strong className="text-lg">Charani Infotech</strong>
+        <strong className="text-lg">Charani Info Tech</strong>
       </div>
 
       {student && (

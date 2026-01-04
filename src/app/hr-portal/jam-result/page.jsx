@@ -33,7 +33,7 @@ function HrPortal_Exam() {
           setStudentData(flattened);
         }
       } catch (error) {
-        console.error(error);
+
         alert("Error fetching users");
       }
     };
