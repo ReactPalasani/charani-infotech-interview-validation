@@ -19,7 +19,7 @@ function Header() {
 
 const handleLogout=()=>{
   localStorage.clear();
-  route.push("/registration");
+  route.push("/admin");
 }
 
   return (
