@@ -4,18 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
+  {label:"Dashboard", path:"/hr-portal/dashboard"},
   { label: "Aptitude", path: "/hr-portal/exam-result" },
   { label: "Jam", path: "/hr-portal/jam-result" },
   { label: "Technical-1", path: "/hr-portal/tr1-result" },
   { label: "Technical-2", path: "/hr-portal/tr2-result" },
   { label: "HR", path: "/hr-portal/hr-result" },
+  
 ];
 
 export default function SwitchTabs() {
   const pathname = usePathname();
 
   return (
-    <div className="flex gap-6 bg-black text-white p-6 mt-4 rounded justify-center">
+    <div className="flex gap-6 text-white  rounded justify-center">
       {tabs.map(tab => {
         const isActive = pathname === tab.path;
 

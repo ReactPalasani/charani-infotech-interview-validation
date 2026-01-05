@@ -99,7 +99,7 @@ export default function StudentDetailsPage() {
              }, 2000);
       }
     } catch (error) {
-
+       throw error;
     }
   };
 

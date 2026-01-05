@@ -41,7 +41,9 @@ export default function AdminLogin() {
           // ✅ Store user data safely
           localStorage.setItem(
             "AdminLogin",
-            JSON.stringify(data.data)
+            JSON.stringify(data.data),
+            localStorage.removeItem("StudentData")
+
           );
          setResponse( <div className='flex justify-center align-middle text-center text-green-800 font-bold'> Login successful</div>);
          setTimeout(() => {
