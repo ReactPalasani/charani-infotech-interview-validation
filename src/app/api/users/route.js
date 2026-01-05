@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    console.log("student Id", body);
+
 
     const dbRef = ref(database, `users/${body.studentId}`);
     const newUserRef = push(dbRef);
