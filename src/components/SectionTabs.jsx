@@ -14,31 +14,31 @@ export default function SectionTabs() {
   const { section, setSection } = useExam();
   const [lockedSections, setLockedSections] = useState([]);
 
-  /* ---------- load locks ---------- */
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("Lock-Tabs");
-      if (saved) setLockedSections(JSON.parse(saved));
-    } catch {
-      localStorage.removeItem("Lock-Tabs");
-    }
-  }, []);
+  // /* ---------- load locks ---------- */
+  // useEffect(() => {
+  //   try {
+  //     const saved = localStorage.getItem("Lock-Tabs");
+  //     if (saved) setLockedSections(JSON.parse(saved));
+  //   } catch {
+  //     localStorage.removeItem("Lock-Tabs");
+  //   }
+  // }, []);
 
-  /* ---------- persist locks ---------- */
-  useEffect(() => {
-    localStorage.setItem("Lock-Tabs", JSON.stringify(lockedSections));
-  }, [lockedSections]);
+  // /* ---------- persist locks ---------- */
+  // useEffect(() => {
+  //   localStorage.setItem("Lock-Tabs", JSON.stringify(lockedSections));
+  // }, [lockedSections]);
 
-  const handleSectionChange = (newSection) => {
-    if (newSection === section) return;
-    if (lockedSections.includes(newSection)) return;
+  // const handleSectionChange = (newSection) => {
+  //   if (newSection === section) return;
+  //   if (lockedSections.includes(newSection)) return;
 
-    setLockedSections((prev) =>
-      prev.includes(section) ? prev : [...prev, section]
-    );
+  //   setLockedSections((prev) =>
+  //     prev.includes(section) ? prev : [...prev, section]
+  //   );
 
-    setSection(newSection);
-  };
+  //   setSection(newSection);
+  // };
 
   return (
     <div className="flex border w-1/2">
@@ -50,7 +50,7 @@ export default function SectionTabs() {
           <button
             key={key}
             disabled={isLocked}
-            onClick={() => handleSectionChange(key)}
+            // onClick={() => handleSectionChange(key)}
             className={`flex-1 py-3 font-semibold transition border shadow
               flex items-center justify-center gap-2
               ${isActive ? "bg-blue-700 text-white" : "bg-white"}
