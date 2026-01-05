@@ -73,9 +73,9 @@ const filteredData = useMemo(() => {
       ? Number(student.correctAnswers) === Number(correctAnswersSearch)
       : true;
 
-    const matchPercentage = percentageSearch
-      ? String(student.percentage).includes(percentageSearch)
-      : true;
+const matchPercentage = percentageSearch
+  ? Number(student.percentage) >= Number(percentageSearch)
+  : true;
 
     const matchSelect =
       selectSearch === ""
@@ -105,6 +105,11 @@ const filteredData = useMemo(() => {
 
   // 📊 Columns
   const columns = [
+      {
+    name: "S.No",
+    cell: (row, index) => index + 1,
+    width: "80px",
+  },
     { name: "Name", selector: row => row.studentName, sortable: true },
     { name: "Email", selector: row => row.studentEmail, sortable: true },
     { name: "Student ID", selector: row => row.studentId, sortable: true },

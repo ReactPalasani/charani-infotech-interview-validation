@@ -97,6 +97,11 @@ const filteredData = useMemo(() => {
 
   // 📊 Columns
   const columns = [
+      {
+    name: "S.No",
+    cell: (row, index) => index + 1,
+    width: "80px",
+  },
     { name: "Name", selector: row => row.studentName, sortable: true },
     { name: "Email", selector: row => row.studentEmail, sortable: true },
     { name: "Student ID", selector: row => row.studentId, sortable: true },
