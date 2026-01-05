@@ -24,6 +24,7 @@ const validationSchema = Yup.object({
 
 export default function ExamPage() {
 
+
     const [responce, setResponse] = useState();
     const [selectedCollegeName, setSelectedCollegeName] = useState("");
     const router = useRouter();
@@ -66,7 +67,7 @@ export default function ExamPage() {
             }
         }
     });
-
+   
     const [collegeList, setCollegeList] = useState();
     useEffect(() => {
         const fetchColleges = async () => {
@@ -77,7 +78,9 @@ export default function ExamPage() {
         fetchColleges();
     }, []);
 
-    console.log
+      useEffect(()=>{
+      localStorage.clear();
+      },[])
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 font-sans text-black">

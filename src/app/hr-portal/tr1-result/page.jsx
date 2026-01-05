@@ -170,9 +170,9 @@ function HrPortal_Exam() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6 text-blue-900 border-b pb-2">Selected candidates for Technical Round</h1>
+      <h1 className="text-2xl font-bold mb-6  pb-2">Selected Candidates For Technical Round</h1>
 
-      <div className="flex gap-4 mb-6 flex-wrap items-end bg-white p-5 rounded-lg shadow-sm border border-gray-100">
+      <div className="flex gap-4 mb-6 flex-wrap items-end bg-white p-5 rounded-lg shadow-sm">
         <div className="flex flex-col gap-1">
           <label className="text-xs font-bold text-gray-500 uppercase">College Name</label>
           <input
@@ -216,12 +216,12 @@ function HrPortal_Exam() {
               : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
           >
-            <UserPlus size={18} /> Move to Technical Interview ({selectedRows.length})
+            <UserPlus size={18} /> Shorlisted For Technical-2  ({selectedRows.length})
           </button>
 
           <button
             onClick={downloadExcel}
-            className="flex items-center gap-2 bg-blue-700 text-white px-5 py-2.5 rounded font-bold hover:bg-blue-800 transition shadow-md active:scale-95"
+            className="flex items-center gap-2 bg-green-700 text-white px-5 py-2.5 rounded font-bold "
           >
             <Download size={18} /> Download Excel
           </button>

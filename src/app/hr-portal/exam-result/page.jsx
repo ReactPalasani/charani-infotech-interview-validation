@@ -16,6 +16,8 @@ function HrPortal_Exam() {
   const [percentageSearch, setPercentageSearch] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const router = useRouter();
+  const [allSelected, setAllSelected] = useState(false);
+
 
   // 1. Auth Check
   useEffect(() => {
@@ -71,11 +73,9 @@ function HrPortal_Exam() {
         collegeName: student.collegeName,
         totalQuestions: student.totalQuestions,
         correctAnswers: student.correctAnswers,
+        aptitudePercentage: student.percentage,
         submittedAt: student.submittedAt,
-        feedback: "Selected for JAM Round",
-        topic: "Aptitude Evaluation",
-        score: student.correctAnswers,
-        selectorName: "HR_Admin",
+        selectorName: JSON.parse(localStorage.getItem('AdminLogin')?.name) || "Hr-Admin",
         Aptitude_select: true
       };
 
@@ -100,7 +100,7 @@ function HrPortal_Exam() {
           Selected students submitted successfully!
         </div>
       );
-      setSelectedRows([]); 
+      setSelectedRows([]);
     } else {
       setResponse(
         <div className='fixed top-10 left-1/2 -translate-x-1/2 z-50 bg-red-100 border-2 border-red-600 text-red-800 px-6 py-2 rounded shadow-lg font-bold'>
@@ -112,12 +112,18 @@ function HrPortal_Exam() {
   };
 
   const handleCheckboxChange = (student) => {
-    setSelectedRows((prev) =>
-      prev.find((s) => s.id === student.id)
-        ? prev.filter((s) => s.id !== student.id)
-        : [...prev, student]
-    );
+    setSelectedRows((prev) => {
+      const exists = prev.find((s) => s.id === student.id);
+      const updated = exists ? prev.filter((s) => s.id !== student.id) : [...prev, student];
+
+      // Update allSelected state
+      if (updated.length === filteredData.length) setAllSelected(true);
+      else setAllSelected(false);
+
+      return updated;
+    });
   };
+
 
   // 4. Filtering Logic
   const filteredData = useMemo(() => {
@@ -145,7 +151,7 @@ function HrPortal_Exam() {
     const excelData = filteredData.map((row, index) => {
       const formattedRow = { "S.No": index + 1 };
       Object.entries(row).forEach(([key, value]) => {
-        if (key !== "id") formattedRow[key] = value;
+        if (key !== "id") formattedRow[key] = value;   
       });
       return formattedRow;
     });
@@ -168,7 +174,7 @@ function HrPortal_Exam() {
     { name: "College Name", selector: row => row.collegeName, sortable: true, width: "250px" },
     { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
     { name: "Correct Answers", selector: row => row.correctAnswers, sortable: true },
-    { name: "percentage", selector: row => row.percentage, sortable: true },
+    { name: "Percentage", selector: row => row.percentage, sortable: true },
     { name: "Submitted At", selector: row => row.submittedAt, sortable: true },
     {
       name: "Selection",
@@ -219,7 +225,7 @@ function HrPortal_Exam() {
           onChange={e => setPercentageSearch(e.target.value)}
           className="border px-3 py-2 rounded w-60 outline-none focus:ring-2 focus:ring-blue-400"
         />
-        
+
         {/* Bulk Select Button */}
         <button
           onClick={handleBulkSelect}
@@ -228,10 +234,29 @@ function HrPortal_Exam() {
           <CheckCircle size={18} /> Select
         </button>
 
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={allSelected}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              setAllSelected(checked);
+              if (checked) {
+                setSelectedRows(filteredData); // select all visible rows
+              } else {
+                setSelectedRows([]); // deselect all
+              }
+            }}
+            className="w-5 h-5 cursor-pointer"
+          />
+          <span className="font-semibold">Select All</span>
+        </div>
+
+
         {/* Excel Download Button */}
         <button
           onClick={downloadExcel}
-          className="flex items-center gap-2 bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition shadow-md"
+          className="flex items-center gap-2 bg-green-700 text-white px-4 py-2 rounded"
         >
           <Download size={18} /> Download Excel
         </button>
