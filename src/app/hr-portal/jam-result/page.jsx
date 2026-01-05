@@ -3,8 +3,9 @@
 import { useEffect, useState, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import Header from "@/components/Header";
-import { View } from "lucide-react";
+import { View, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
+import * as XLSX from "xlsx";
 
 function HrPortal_Exam() {
   const [studentData, setStudentData] = useState([]);
@@ -93,6 +94,32 @@ const filteredData = useMemo(() => {
   selectSearch,
 ]);
 
+/* ================= EXCEL DOWNLOAD (DYNAMIC) ================= */
+  const downloadExcel = () => {
+    if (!filteredData.length) return;
+
+    const excelData = filteredData.map((row, index) => {
+      const formattedRow = { "S.No": index + 1 };
+
+      Object.entries(row).forEach(([key, value]) => {
+        if (key !== "id") {
+          formattedRow[key] = value;
+        }
+      });
+
+      return formattedRow;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Jam Results"
+    );
+
+    XLSX.writeFile(workbook, "Jam_Results.xlsx");
+  };
 
 
   // 📊 Columns
@@ -178,6 +205,13 @@ const filteredData = useMemo(() => {
       <option value="no">No</option>
     </select>
   </div>
+  <button
+            onClick={downloadExcel}
+            className="flex items-center gap-2 bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
+          >
+            <Download size={18} />
+            Download Excel
+          </button>
 
 </div>
 

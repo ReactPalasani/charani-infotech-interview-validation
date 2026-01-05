@@ -58,14 +58,18 @@ export function ExamProvider({ children }) {
 //         setCurrentIndex(0);
 //       });
 //   }, [section]);
+console.log("section", section);
 
   useEffect(() => {
     async function loadQuestions() {
       const res = await fetch(`/api/${section.toLowerCase()}`);
       const data = await res.json();
+      console.log("api data",data );
 
       const shuffled = shuffleArray(data.data).map(shuffleQuestion);
-      setQuestions(shuffled);
+      
+       const tenQuestions = shuffled.slice(0, 10);
+      setQuestions(tenQuestions);
       setCurrentIndex(0);
     }
 
