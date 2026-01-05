@@ -3,8 +3,9 @@
 import { useEffect, useState, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import Header from "@/components/Header";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
+import * as XLSX from "xlsx";
 
 function HrPortal_Exam() {
   const [response, setResponse] = useState(null);
@@ -13,7 +14,7 @@ function HrPortal_Exam() {
   const [correctAnswersSearch, setCorrectAnswersSearch] = useState("");
   const [collgeNameSearch, setCollegeNameSearch] = useState("");
   const [percentageSearch, setPercentageSearch] = useState("");
-  const [selectedRows, setSelectedRows] = useState([]); // Track selected checkboxes
+  const [selectedRows, setSelectedRows] = useState([]);
   const router = useRouter();
 
   // 1. Auth Check
@@ -24,7 +25,7 @@ function HrPortal_Exam() {
     }
   }, [router]);
 
-  // 2. Fetch Data from Aptitude Results
+  // 2. Fetch Data
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -53,7 +54,7 @@ function HrPortal_Exam() {
     fetchStudents();
   }, []);
 
-  // 3. Status Submit Logic (Modified for Bulk Selection)
+  // 3. Status Submit Logic (Bulk Selection)
   const handleBulkSelect = async () => {
     if (selectedRows.length === 0) {
       alert("Please select at least one student.");
@@ -75,7 +76,7 @@ function HrPortal_Exam() {
         topic: "Aptitude Evaluation",
         score: student.correctAnswers,
         selectorName: "HR_Admin",
-        select: true 
+        Aptitude_select: true
       };
 
       try {
@@ -99,7 +100,7 @@ function HrPortal_Exam() {
           Selected students submitted successfully!
         </div>
       );
-      setSelectedRows([]); // Clear selection after success
+      setSelectedRows([]); 
     } else {
       setResponse(
         <div className='fixed top-10 left-1/2 -translate-x-1/2 z-50 bg-red-100 border-2 border-red-600 text-red-800 px-6 py-2 rounded shadow-lg font-bold'>
@@ -110,7 +111,6 @@ function HrPortal_Exam() {
     setTimeout(() => setResponse(null), 2000);
   };
 
-  // Toggle individual row selection
   const handleCheckboxChange = (student) => {
     setSelectedRows((prev) =>
       prev.find((s) => s.id === student.id)
@@ -138,6 +138,22 @@ function HrPortal_Exam() {
       return matchStudentId && matchCollege && matchCorrectAnswers && matchPercentage;
     });
   }, [studentData, studentIdSearch, collgeNameSearch, correctAnswersSearch, percentageSearch]);
+
+  // Excel Download Logic
+  const downloadExcel = () => {
+    if (!filteredData.length) return;
+    const excelData = filteredData.map((row, index) => {
+      const formattedRow = { "S.No": index + 1 };
+      Object.entries(row).forEach(([key, value]) => {
+        if (key !== "id") formattedRow[key] = value;
+      });
+      return formattedRow;
+    });
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Aptitude Results");
+    XLSX.writeFile(workbook, "Aptitude_Results.xlsx");
+  };
 
   // 5. Columns Configuration
   const columns = [
@@ -173,44 +189,51 @@ function HrPortal_Exam() {
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold mb-4 mt-4">Aptitude Result</h1>
 
-      {/* Filters Section */}
+      {/* Filters & Actions Section */}
       <div className="flex gap-4 mb-4 flex-wrap bg-white p-4 rounded shadow-sm items-center">
         <input
           type="text"
           placeholder="Search By College Name"
           value={collgeNameSearch}
           onChange={e => setCollegeNameSearch(e.target.value)}
-          className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
-          autoFocus
+          className="border px-3 py-2 rounded w-60 outline-none focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="text"
           placeholder="Search By Student ID"
           value={studentIdSearch}
           onChange={e => setstudentIdSearch(e.target.value)}
-          className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          className="border px-3 py-2 rounded w-60 outline-none focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="number"
           placeholder="Min Correct Answers"
           value={correctAnswersSearch}
           onChange={e => setCorrectAnswersSearch(e.target.value)}
-          className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          className="border px-3 py-2 rounded w-60 outline-none focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="text"
           placeholder="Min Percentage"
           value={percentageSearch}
           onChange={e => setPercentageSearch(e.target.value)}
-          className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          className="border px-3 py-2 rounded w-60 outline-none focus:ring-2 focus:ring-blue-400"
         />
         
-        {/* NEW SELECT BUTTON AFTER MIN PERCENTAGE */}
+        {/* Bulk Select Button */}
         <button
           onClick={handleBulkSelect}
           className="bg-green-600 text-white px-6 py-2 rounded font-bold flex items-center gap-2 hover:bg-green-700 transition shadow-md"
         >
           <CheckCircle size={18} /> Select
+        </button>
+
+        {/* Excel Download Button */}
+        <button
+          onClick={downloadExcel}
+          className="flex items-center gap-2 bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition shadow-md"
+        >
+          <Download size={18} /> Download Excel
         </button>
       </div>
 

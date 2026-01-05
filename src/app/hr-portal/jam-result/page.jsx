@@ -2,27 +2,31 @@
 
 import { useEffect, useState, useMemo } from "react";
 import DataTable from "react-data-table-component";
-import { View, MessagesSquare, X, UserCheck, NotepadText } from "lucide-react";
+import Header from "@/components/Header";
+import { View, X, NotepadText, UserCheck, MessagesSquare, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
+import * as XLSX from "xlsx";
 
 function HrPortal_Exam() {
   const [studentData, setStudentData] = useState([]);
   const [studentIdSearch, setstudentIdSearch] = useState("");
   const [selectSearch, setSelectSearch] = useState("");
   const [collegeNameSearch, setCollegeNameSearch] = useState("");
+  const [correctAnswersSearch, setCorrectAnswersSearch] = useState("");
   const [response, setResponse] = useState(null);
   const router = useRouter();
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  
+
   // Form State for Popup
   const [feedback, setFeedback] = useState("");
-  const [topic, setTopic] = useState(""); 
+  const [topic, setTopic] = useState("");
   const [selectorName, setSelectorName] = useState("");
   const [isSelected, setIsSelected] = useState(false);
 
+  // 1. Auth Check
   useEffect(() => {
     const admin = JSON.parse(localStorage.getItem('AdminLogin'));
     if (!admin) {
@@ -30,6 +34,7 @@ function HrPortal_Exam() {
     }
   }, [router]);
 
+  // 2. Fetch Data
   const fetchStudents = async () => {
     try {
       const res = await fetch("/api/jam-result");
@@ -54,41 +59,27 @@ function HrPortal_Exam() {
     fetchStudents();
   }, []);
 
-  const filteredData = useMemo(() => {
-    return studentData.filter(student => {
-      const matchStudentId = studentIdSearch ? student.studentId?.toLowerCase().includes(studentIdSearch.toLowerCase()) : true;
-      const matchCollegeName = collegeNameSearch ? student.collegeName?.toLowerCase().includes(collegeNameSearch.toLowerCase()) : true;
-      const matchSelect = selectSearch === "" ? true : selectSearch === "yes" ? student.select === true : student.select === false;
-      return matchStudentId && matchCollegeName && matchSelect;
-    });
-  }, [studentData, studentIdSearch, collegeNameSearch, selectSearch]);
-
+  // 3. Modal Logic
   const handleOpenModal = (student) => {
     setSelectedStudent(student);
-    setFeedback("");
-    setTopic(""); 
-    setSelectorName("");
-    setIsSelected(false);
+    setFeedback(student.feedback || "");
+    setTopic(student.topic || "");
+    setSelectorName(student.selectorName || "");
+    setIsSelected(student.select || false);
     setIsModalOpen(true);
   };
 
   const handleSubmit = async () => {
-    const payload = {
-      studentName: selectedStudent.studentName,
-      studentEmail: selectedStudent.studentEmail,
-      studentId: selectedStudent.studentId,
-      collegeName: selectedStudent.collegeName,
-      totalQuestions: selectedStudent.totalQuestions,
-      correctAnswers: selectedStudent.correctAnswers,
-      submittedAt: selectedStudent.submittedAt,
-      feedback,
-      topic,
-      selectorName,
-      select: isSelected
-    };
-
     try {
-      const res = await fetch("/api/tr1-Exam-Result", {
+      const payload = {
+        ...selectedStudent,
+        feedback,
+        topic,
+        selectorName,
+        jam_selected: isSelected
+      };
+
+      const res = await fetch("/api/jam-result", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -96,16 +87,69 @@ function HrPortal_Exam() {
 
       const data = await res.json();
       if (data.success) {
-        alert("Data submitted successfully!");
+        setResponse(<div className="fixed top-5 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-2 rounded shadow-lg z-[60]">Update Successful!</div>);
         setIsModalOpen(false);
-        fetchStudents(); 
-      } else {
-        alert("User already exists.");
+        fetchStudents();
+        setTimeout(() => setResponse(null), 3000);
       }
     } catch (error) {
-      alert("Error submitting data.");
+      alert("Error updating result");
     }
   };
+
+  // --- EXCEL DOWNLOAD LOGIC ---
+  const handleDownloadExcel = () => {
+    if (filteredData.length === 0) {
+      alert("No data available to download");
+      return;
+    }
+
+    const excelData = filteredData.map((item, index) => ({
+      "S.No": index + 1,
+      "Student Name": item.studentName,
+      "Email": item.studentEmail,
+      "Student ID": item.studentId,
+      "College": item.collegeName,
+      "Score": item.score,
+      "Correct Answers": item.correctAnswers,
+      "Selected": item.Aptitude_select? "Yes" : "No",
+      "Invigilator": item.selectorName || "N/A",
+      "Topic": item.topic || "N/A",
+      "Feedback": item.feedback || "N/A",
+      "Date": item.submittedAt || "N/A"
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "JAM Results");
+    XLSX.writeFile(workbook, `Jam_Results_${new Date().toLocaleDateString()}.xlsx`);
+  };
+
+  // 4. Filtering Logic
+  const filteredData = useMemo(() => {
+    return studentData.filter(student => {
+      const matchStudentId = studentIdSearch
+        ? student.studentId?.toLowerCase().includes(studentIdSearch.toLowerCase())
+        : true;
+
+      const matchCollegeName = collegeNameSearch
+        ? student.collegeName?.toLowerCase().includes(collegeNameSearch.toLowerCase())
+        : true;
+
+      const matchCorrectAnswers = correctAnswersSearch
+        ? Number(student.correctAnswers) === Number(correctAnswersSearch)
+        : true;
+
+      const matchSelect =
+        selectSearch === ""
+          ? true
+          : selectSearch === "yes"
+            ? student.select === true
+            : student.select === false;
+
+      return matchStudentId && matchCollegeName && matchCorrectAnswers && matchSelect;
+    });
+  }, [studentData, studentIdSearch, collegeNameSearch, correctAnswersSearch, selectSearch]);
 
   const columns = [
     { name: "S.No", cell: (row, index) => index + 1, width: "80px" },
@@ -131,32 +175,53 @@ function HrPortal_Exam() {
 
   return (
     <div className="p-6 min-h-screen bg-gray-50">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Jam Result Portal</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Selected candidates for Jam Round</h1>
 
-      <div className="flex gap-4 mb-6 flex-wrap">
-        <input
-          type="text"
-          placeholder="Search by College Name"
-          value={collegeNameSearch}
-          onChange={e => setCollegeNameSearch(e.target.value)}
-          className="border px-3 py-2 rounded-md w-64 shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
-        />
-        <input
-          type="text"
-          placeholder="Search by Student ID"
-          value={studentIdSearch}
-          onChange={e => setstudentIdSearch(e.target.value)}
-          className="border px-3 py-2 rounded-md w-64 shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
-        />
-        <select
-          value={selectSearch}
-          onChange={e => setSelectSearch(e.target.value)}
-          className="border px-3 py-2 rounded-md w-64 shadow-sm focus:ring-2 focus:ring-blue-400 outline-none bg-white"
+      {/* Filters & Download Button Row */}
+      <div className="flex gap-4 mb-6 flex-wrap items-end">
+        <div>
+          <label className="block text-sm font-bold mb-1">College Name</label>
+          <input
+            type="text"
+            placeholder="Search College..."
+            value={collegeNameSearch}
+            onChange={e => setCollegeNameSearch(e.target.value)}
+            className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold mb-1">Student ID</label>
+          <input
+            type="text"
+            placeholder="Search ID..."
+            value={studentIdSearch}
+            onChange={e => setstudentIdSearch(e.target.value)}
+            className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold mb-1">Shortlisted</label>
+          <select
+            value={selectSearch}
+            onChange={e => setSelectSearch(e.target.value)}
+            className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="">All</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        {/* Download Button positioned right after Shortlisted input */}
+        <button 
+          onClick={handleDownloadExcel}
+          className="flex items-center justify-center gap-2 bg-green-700 text-white px-6 py-[9px] rounded font-bold hover:bg-green-800 transition shadow-sm"
         >
-          <option value="">All Status</option>
-          <option value="yes">Selected (Yes)</option>
-          <option value="no">Not Selected (No)</option>
-        </select>
+          <Download size={18} />
+          Download Excel
+        </button>
       </div>
 
       <div className="bg-white rounded-lg shadow">
@@ -170,6 +235,7 @@ function HrPortal_Exam() {
         />
       </div>
 
+      {/* Popup Modal */}
       {isModalOpen && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
@@ -188,8 +254,6 @@ function HrPortal_Exam() {
             </div>
 
             <div className="p-6 overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-              
-              {/* Left Column: Details + Topic */}
               <div className="space-y-6">
                 <div className="bg-blue-50 p-5 rounded-lg border border-blue-100">
                   <h3 className="font-bold text-blue-900 mb-4 border-b border-blue-200 pb-2 uppercase text-xs tracking-wider">Student Details</h3>
@@ -197,13 +261,10 @@ function HrPortal_Exam() {
                     <span className="text-gray-600 font-medium">Full Name:</span> <span className="text-gray-900">{selectedStudent.studentName}</span>
                     <span className="text-gray-600 font-medium">Email:</span> <span className="text-gray-900 break-all">{selectedStudent.studentEmail}</span>
                     <span className="text-gray-600 font-medium">College:</span> <span className="text-gray-900">{selectedStudent.collegeName}</span>
-                    <span className="text-gray-600 font-medium">Total Qs:</span> <span className="text-gray-900">{selectedStudent.totalQuestions}</span>
                     <span className="text-gray-600 font-medium">Correct Ans:</span> <span className="text-gray-900 font-bold text-green-700">{selectedStudent.correctAnswers}</span>
-                    <span className="text-gray-600 font-medium">Date:</span> <span className="text-gray-900">{selectedStudent.submittedAt}</span>
                   </div>
                 </div>
 
-                {/* Topic placed below the details */}
                 <div>
                    <label className="font-bold flex items-center gap-2 mb-2 text-gray-700">
                      <NotepadText size={18} /> Topic
@@ -218,7 +279,6 @@ function HrPortal_Exam() {
                 </div>
               </div>
 
-              {/* Right Column: Invigilator & Feedback */}
               <div className="space-y-6">
                 <div>
                   <label className="font-bold flex items-center gap-2 mb-2 text-gray-700">

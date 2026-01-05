@@ -59,13 +59,17 @@ export function ExamProvider({ children }) {
 //       });
 //   }, [section]);
 
+
   useEffect(() => {
     async function loadQuestions() {
       const res = await fetch(`/api/${section.toLowerCase()}`);
       const data = await res.json();
 
+
       const shuffled = shuffleArray(data.data).map(shuffleQuestion);
-      setQuestions(shuffled);
+
+       const tenQuestions = shuffled.slice(0, 10);
+      setQuestions(tenQuestions);
       setCurrentIndex(0);
     }
 
