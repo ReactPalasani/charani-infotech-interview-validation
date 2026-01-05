@@ -59,17 +59,37 @@ export function ExamProvider({ children }) {
 //   }, [section]);
 
   useEffect(() => {
-    async function loadQuestions() {
-      const res = await fetch(`/api/${section.toLowerCase()}`);
-      const data = await res.json();
+  async function loadQuestions() {
+    try {
+      const cached = localStorage.getItem(section);
 
-      const shuffled = shuffleArray(data.data).map(shuffleQuestion);
-      setQuestions(shuffled);
+      let questionsData = [];
+
+      if (cached) {
+        questionsData = JSON.parse(cached);
+      } else {
+        const res = await fetch(`/api/${section.toLowerCase()}`);
+        const data = await res.json();
+        questionsData = data.data || [];
+        localStorage.setItem(section, JSON.stringify(questionsData));
+      }
+
+      // const shuffled = shuffleArray(questionsData)
+      //   .map(shuffleQuestion)
+      //   .filter(Boolean)
+      //   .slice(0, 10);
+
+      const finalQuestions = questionsData.slice(0, 20); 
+
+      setQuestions(finalQuestions);
       setCurrentIndex(0);
+    } catch (err) {
+      console.error("Failed to load questions", err);
     }
+  }
 
-    loadQuestions();
-  }, [section]);
+  loadQuestions();
+}, [section]);
 
   // persist timer
   useEffect(() => {

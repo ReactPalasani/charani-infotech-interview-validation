@@ -25,6 +25,7 @@ const validationSchema = Yup.object({
 export default function ExamPage() {
 
     const [responce, setResponse] = useState();
+    const [selectedCollegeName, setSelectedCollegeName] = useState("");
     const router = useRouter();
     const formik = useFormik({
         initialValues: {
@@ -53,8 +54,8 @@ export default function ExamPage() {
                     setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold'>{data.message} </div>);
                     localStorage.setItem('StudentData', JSON.stringify(values));
                     setTimeout(() => {
-                       router.push("/instructions");
-                    },2000);
+                        router.push("/instructions");
+                    }, 2000);
 
                 } else {
                     setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold'> Student-Id Already Exists </div>);
@@ -65,6 +66,18 @@ export default function ExamPage() {
             }
         }
     });
+
+    const [collegeList, setCollegeList] = useState();
+    useEffect(() => {
+        const fetchColleges = async () => {
+            const res = await fetch("/api/add-colleges");
+            const data = await res.json();
+            if (data.success) setCollegeList(data.data);
+        };
+        fetchColleges();
+    }, []);
+
+    console.log
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 font-sans text-black">
@@ -134,11 +147,38 @@ export default function ExamPage() {
 
                         {/* College Name */}
                         <div className="flex flex-col gap-1">
-                            <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><Building2 className="w-4 h-4" /> College Name <span className='text-red-600'>*</span></label>
-                            <input id="collegeName" name="collegeName" type="text" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.collegeName} placeholder='Enter your college name'
-                                className="p-2 border border-gray-300 rounded-lg focus:border-blue-900 outline-none" />
-                            {formik.touched.collegeName && formik.errors.collegeName && <div className='text-red-600 text-xs'>{formik.errors.collegeName}</div>}
+                            <label className="text-sm font-bold text-blue-900 flex items-center gap-2">
+                                <Building2 className="w-4 h-4" />
+                                College Name <span className="text-red-600">*</span>
+                            </label>
+
+                            <select
+                                name="collegeName"
+                                value={formik.values.collegeName}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                className={`p-2 border rounded-lg outline-none transition-all
+                                 ${formik.touched.collegeName && formik.errors.collegeName
+                                        ? "border-red-500"
+                                        : "border-gray-300 focus:border-blue-900"
+                                    }`}
+                            >
+                                <option value="">-- Select College --</option>
+
+                                {collegeList?.map((college, index) => (
+                                    <option key={index} value={college}>
+                                        {college}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {formik.touched.collegeName && formik.errors.collegeName && (
+                                <div className="text-red-600 text-xs">
+                                    {formik.errors.collegeName}
+                                </div>
+                            )}
                         </div>
+
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {/* Gender */}

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import SwitchTabs from "./Switching-Exam-Result-Pannels";
 function Header() {
   const [student, setStudent] = useState(null);
    const [admin, setAdmin] = useState(null);
@@ -12,8 +13,7 @@ function Header() {
 
     useEffect(() => {
     const data = localStorage.getItem("AdminLogin");
-    if (data){ setAdmin(JSON.parse(data))
-    localStorage.removeItem("StudentData");
+    if (data){ setAdmin(JSON.parse(data), localStorage.removeItem("StudentData") );
     }
   }, []);
 
@@ -33,12 +33,15 @@ const handleLogout=()=>{
         />
         <strong className="text-lg">Charani Infotech</strong>
       </div>
-
+      {admin &&
+           <SwitchTabs/>
+      }
       {student && (
         <h1>
           <span className="font-bold">Candidate:</span> {student.studentId}
         </h1>
       )}
+
       {admin &&(
       <button className="font-bold" onClick={handleLogout}>Log-out</button>
       )
