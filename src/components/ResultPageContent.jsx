@@ -48,7 +48,8 @@ export default function ResultPageContent() {
   }
 
   const handleBack = () => {
-    localStorage.removeItem("StudentData"); // ✅ only remove what you need
+    // localStorage.removeItem("StudentData"); // ✅ only remove what you need
+    localStorage.clear(); // ❌ avoid clearing everything
     router.replace("/registration");
   };
 

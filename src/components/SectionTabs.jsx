@@ -2,8 +2,11 @@
 
 import { useExam } from "@/context/ExamContext";
 import { Users, Brain, MessageSquare } from "lucide-react";
-import { useEffect, useState } from "react";
 
+/**
+ * SECTIONS configuration
+ * Defines the navigation tabs for the exam.
+ */
 const SECTIONS = [
   { key: "Aptitude", label: "Aptitude", icon: Users },
   { key: "Reasoning", label: "Reasoning", icon: Brain },
@@ -11,54 +14,41 @@ const SECTIONS = [
 ];
 
 export default function SectionTabs() {
+  // Accessing the current section and the setter function from your ExamContext
   const { section, setSection } = useExam();
-  const [lockedSections, setLockedSections] = useState([]);
 
-  /* ---------- load locks ---------- */
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("Lock-Tabs");
-      if (saved) setLockedSections(JSON.parse(saved));
-    } catch {
-      localStorage.removeItem("Lock-Tabs");
-    }
-  }, []);
-
-  /* ---------- persist locks ---------- */
-  useEffect(() => {
-    localStorage.setItem("Lock-Tabs", JSON.stringify(lockedSections));
-  }, [lockedSections]);
-
+  /**
+   * Updates the global exam state to the selected section.
+   * This allows the user to jump back and forth between subjects.
+   */
   const handleSectionChange = (newSection) => {
-    if (newSection === section) return;
-    if (lockedSections.includes(newSection)) return;
-
-    setLockedSections((prev) =>
-      prev.includes(section) ? prev : [...prev, section]
-    );
-
-    setSection(newSection);
+    if (newSection !== section) {
+      setSection(newSection);
+    }
   };
 
   return (
-    <div className="flex border w-1/2">
+    <div className="flex border w-full md:w-1/2 rounded-md overflow-hidden">
       {SECTIONS.map(({ key, label, icon: Icon }) => {
-        const isLocked = lockedSections.includes(key);
         const isActive = section === key;
 
         return (
           <button
             key={key}
-            disabled={isLocked}
+            type="button"
             onClick={() => handleSectionChange(key)}
-            className={`flex-1 py-3 font-semibold transition border shadow
+            className={`
+              flex-1 py-3 font-semibold transition-all duration-200 border-r last:border-r-0
               flex items-center justify-center gap-2
-              ${isActive ? "bg-blue-700 text-white" : "bg-white"}
-              ${isLocked ? "opacity-50 cursor-not-allowed" : ""}
+              ${isActive 
+                ? "bg-blue-700 text-white shadow-inner" 
+                : "bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-700"
+              }
             `}
           >
             <Icon className="w-4 h-4" />
-            {label}
+            <span className="hidden sm:inline">{label}</span>
+            <span className="sm:hidden text-xs">{label.substring(0, 3)}</span>
           </button>
         );
       })}
