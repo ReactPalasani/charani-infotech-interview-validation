@@ -121,7 +121,7 @@ useEffect(() => {
 
         <div className="mb-4">
           <label htmlFor="selectorName" className="font-bold mr-2">
-            Invisilator Name
+            Invigilator Name
           </label>
           <select
             id="selectorName"
