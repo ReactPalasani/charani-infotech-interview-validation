@@ -231,7 +231,7 @@ function HrPortal_Exam() {
         {/* Excel Download Button */}
         <button
           onClick={downloadExcel}
-          className="flex items-center gap-2 bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition shadow-md"
+          className="flex items-center gap-2 bg--700 text-white px-4 py-2 rounded "
         >
           <Download size={18} /> Download Excel
         </button>

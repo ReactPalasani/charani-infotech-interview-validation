@@ -1,4 +1,10 @@
+import { getDatabase } from "firebase-admin/database";
 import { NextResponse } from "next/server";
+import "@/lib/firebaseAdmin"; // make sure admin.initializeApp() is done here
+
+function encodeEmail(email) {
+  return email.replace(/\./g, "_");
+}
 
 export async function POST(req) {
   try {
@@ -11,28 +17,43 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Hardcoded admin login (INTERVIEW PURPOSE)
-    if (
-      email === "hrCharani-infotech@gmail.com" &&
-      password === "Ch@r@n!Q1D2@"
-    ) {
-      return NextResponse.json({
-        success: true,
-        message: "Successfully Login",
-        data: {
-          email,
-          role: "Admin",
-        },
-      });
+    const emailKey = encodeEmail(email);
+    const db = getDatabase();
+    const userRef = db.ref(`AdminUsers/${emailKey}`);
+
+    const snapshot = await userRef.get();
+
+    // ❌ User not found
+    if (!snapshot.exists()) {
+      return NextResponse.json(
+        { success: false, message: "Invalid email or password" },
+        { status: 401 }
+      );
     }
 
-    // ❌ Invalid credentials
-    return NextResponse.json(
-      { success: false, message: "Invalid email or password" },
-      { status: 401 }
-    );
+    const userData = snapshot.val();
+
+    // ❌ Password mismatch
+    if (userData.password !== password) {
+      return NextResponse.json(
+        { success: false, message: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    // ✅ Login success
+    return NextResponse.json({
+      success: true,
+      message: "Successfully Login",
+      data: {
+        email: userData.email,
+        role: userData.role || "Admin",
+        name: userData.name,
+      },
+    });
 
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 }
