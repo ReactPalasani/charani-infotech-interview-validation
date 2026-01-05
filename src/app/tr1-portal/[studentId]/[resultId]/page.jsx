@@ -7,9 +7,10 @@ import Header from "@/components/Header";
 import { MessagesSquare, NotepadText, PencilLine } from "lucide-react";
 
 export default function StudentDetailsPage() {
-  const { resultId } = useParams();
+  const { resultId,studentId } = useParams();
   const router = useRouter();
   const [student, setStudent] = useState(null);
+
 
   // Controlled form state
   const [feedback, setFeedback] = useState("");
@@ -17,8 +18,6 @@ export default function StudentDetailsPage() {
   const [score, setScore] = useState("");
   const [selectorName, setSelectorName] = useState("");
   const [select, setSelect] = useState(false); // optional
-
-  const[responce,setResponse]=useState();
 
    useEffect(
   ()=>{
@@ -29,35 +28,51 @@ export default function StudentDetailsPage() {
   },[]
  );
 
-  useEffect(() => {
-    const fetchDetails = async () => {
-      try {
-        const res = await fetch("/api/result");
-        const data = await res.json();
+useEffect(() => {
+  const fetchDetails = async () => {
+    try {
+      const res = await fetch("/api/result");
+      const data = await res.json();
 
-        if (!data.success) return;
+      
 
-        const flattened = Object.entries(data.data || {}).flatMap(
-          ([, collegeObj]) =>
-            Object.entries(collegeObj).map(([key, value]) => ({
-              id: key,
-              ...value,
-            }))
-        );
+      if (!data.success || !data.data) return;
 
-        const found = flattened.find(item => item.id === resultId);
-        setStudent(found);
-      } catch (error) {
+      const collegeResults = data.data[studentId];
 
+      // ❌ No data for this college
+      if (!collegeResults) {
+        setStudent(null);
+        return;
       }
-    };
 
-    fetchDetails();
-  }, [resultId]);
+      // ✅ Convert results object → array
+      const flattened = Object.entries(collegeResults).map(
+        ([id, value]) => ({
+          id,
+          ...value,
+        })
+      );
+
+      // ✅ Find result by resultId
+      const found = flattened.find(item => item.id !== resultId);
+
+      setStudent(found || null);
+    } catch (error) {
+
+    }
+  };
+
+  fetchDetails();
+}, [studentId, resultId]);
 
   if (!student) {
-    return <div className="p-6 text-center">Loading details...</div>;
-  }
+  return (
+    <div className="p-6 text-center text-red-600">
+      No result found for this College ID
+    </div>
+  );
+}
 
   // Submit handler
   const handleSubmit = async () => {
@@ -70,14 +85,12 @@ export default function StudentDetailsPage() {
       correctAnswers: student.correctAnswers,
       submittedAt: student.submittedAt,
       feedback,
-      topic,
-      score,
       selectorName,
       select:select
     };
  
     try {
-      const res = await fetch("/api/jam-result", {
+      const res = await fetch("/api/tr1-Exam-Result", {
         method: "POST",    
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -85,23 +98,17 @@ export default function StudentDetailsPage() {
 
       const data = await res.json();
       if (data.success) {
-     setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold mt-6'> Data submitted successfully!</div>);
-     setTimeout(()=>{
-      setResponse("");
-       router.back();
-     },2000);
-        // optional: go back after submit
+        alert("Data submitted successfully!");
+        router.back(); // optional: go back after submit
       } else {
-             setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold mt-6'> Student already exist.</div>);
-             setTimeout(() => {
-               setResponse("");
-             }, 2000);
+        alert("user already exist.");
       }
     } catch (error) {
 
     }
   };
 
+  
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="p-6 max-w-6xl mx-auto">
@@ -114,7 +121,7 @@ export default function StudentDetailsPage() {
 
         <div className="mb-4">
           <label htmlFor="selectorName" className="font-bold mr-2">
-            Invisilator Name
+            Invigilator Name
           </label>
           <select
             id="selectorName"
@@ -171,7 +178,7 @@ export default function StudentDetailsPage() {
 
             <div className="mt-6 space-y-4">
               <div className="flex flex-col lg:flex-row gap-6">
-                <div className="flex-1">
+                {/* <div className="flex-1">
                   <label
                     htmlFor="topic"
                     className="font-bold flex items-center gap-2 mb-1"
@@ -186,9 +193,9 @@ export default function StudentDetailsPage() {
                     className="border-2 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                     placeholder="Enter Topic Here"
                   />
-                </div>
+                </div> */}
 
-                <div className="flex-1">
+                {/* <div className="flex-1">
                   <label
                     htmlFor="score"
                     className="font-bold flex items-center gap-2 mb-1"
@@ -208,7 +215,7 @@ export default function StudentDetailsPage() {
                       </option>
                     ))}
                   </select>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex items-center gap-2">
@@ -234,7 +241,6 @@ export default function StudentDetailsPage() {
             </div>
           </div>
         </div>
-        {responce}
       </div>
     </div>
   );

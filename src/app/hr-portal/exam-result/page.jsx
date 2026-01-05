@@ -87,17 +87,19 @@ function HrPortal_Exam() {
 ]);
 
 
-  // 📊 Columns
+  // 📊 Columns 
   const columns = [
        {
     name: "S.No",
     cell: (row, index) => index + 1,
     width: "80px",
   },
-    { name: "Name", selector: row => row.studentName, sortable: true },
-    { name: "Email", selector: row => row.studentEmail, sortable: true },
+    { name: "Name", selector: row => row.studentName, sortable: true
+
+     },
+    { name: "Email", selector: row => row.studentEmail, sortable: true, width:"250px" },
     { name: "Student ID", selector: row => row.studentId, sortable: true },
-    { name: "College Name", selector: row => row.collegeName, sortable: true },
+    { name: "College Name", selector: row => row.collegeName, sortable: true, width:"250px" },
     { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
     { name: "Correct Answers", selector: row => row.correctAnswers, sortable: true },
     { name: "percentage", selector: row => row.percentage, sortable: true },
@@ -117,6 +119,8 @@ function HrPortal_Exam() {
       ignoreRowClick: true, // ✅ only this is needed
     },
   ];
+
+  
 
   return (
     <div className="p-6">

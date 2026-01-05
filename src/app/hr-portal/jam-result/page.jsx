@@ -103,9 +103,10 @@ const filteredData = useMemo(() => {
     width: "80px",
   },
     { name: "Name", selector: row => row.studentName, sortable: true },
-    { name: "Email", selector: row => row.studentEmail, sortable: true },
+    { name: "Email", selector: row => row.studentEmail, sortable: true, width:"250px"
+    },
     { name: "Student ID", selector: row => row.studentId, sortable: true },
-    { name: "College Name", selector: row => row.collegeName, sortable: true },
+    { name: "College Name", selector: row => row.collegeName, sortable: true,  width : "250px" },
     { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
     { name: "Correct Answers", selector: row => row.correctAnswers, sortable: true },
     { name: "Score", selector: row => row.score, sortable: true },
@@ -187,7 +188,8 @@ const filteredData = useMemo(() => {
         pagination
         highlightOnHover
         striped
-        responsive
+        responsive 
+        style={{minWidth:'250px'}}
       />
       {response}
     </div>
