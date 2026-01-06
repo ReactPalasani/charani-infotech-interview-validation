@@ -35,7 +35,16 @@ export async function GET() {
       counter = endIndex; // update counter for next fetch
     }
 
-     const batchQuestions = questionsArray.slice(startIndex, endIndex);
+        const batchQuestions = shuffled
+      .slice(startIndex, endIndex)
+      .map(q => ({
+        question: q.question ?? null,
+        A: q.A ?? null,
+        B: q.B ?? null,
+        C: q.C ?? null,
+        D: q.D ?? null,
+        Answer: q.Answer ?? null, // 🔐 important
+      }));
       await set(counterRef, counter);
 
     console.log("count",counter);

@@ -40,12 +40,23 @@ export async function GET() {
       shuffled = shuffleArray([...questionsArray]);
     }
 
+   
+
     const startIndex = counter;
     const endIndex = startIndex + questionsPerBatch;
 
-    const batchQuestions = shuffled.slice(startIndex, endIndex);
+         const batchQuestions = shuffled
+      .slice(startIndex, endIndex)
+      .map(q => ({
+        question: q.question ?? null,
+        A: q.A ?? null,
+        B: q.B ?? null,
+        C: q.C ?? null,
+        D: q.D ?? null,
+        Answer: q.Answer ?? null, 
+      }));
 
-    // 🔹 Update counter for next request
+   
     await set(counterRef, endIndex);
 
     return NextResponse.json({

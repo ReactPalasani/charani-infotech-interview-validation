@@ -64,7 +64,7 @@ export default function SubmitExamButton() {
       setResponse(<div className='flex justify-center align-middle text-center text-red-800 mt-6 font-bold'> Exam Submition Failed </div>);
          setTimeout(() => {
            setResponse("");
-        },2000);
+        },2000); 
       }
     } catch (error) {
       setResponse(<div className='flex justify-center align-middle text-center text-red-800 mt-6 font-bold'> Failed to submit exam </div>);
