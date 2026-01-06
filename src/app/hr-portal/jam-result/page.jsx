@@ -160,7 +160,7 @@ function HrPortal_Exam() {
     { name: "Student ID", selector: row => row.studentId, sortable: true },
     { name: "College", selector: row => row.collegeName, sortable: true, width: "250px" },
     { name: "Score", selector: row => row.score, sortable: true },
-    { name: "Select", selector: row => row.select ? "Yes" : "No", sortable: true },
+    { name: "Aptitude_select", selector: row => row.Aptitude_select ? "Yes" : "No", sortable: true },
     {
       name: "Action",
       cell: row => (
