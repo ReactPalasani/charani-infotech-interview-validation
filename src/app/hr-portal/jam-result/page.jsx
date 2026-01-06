@@ -62,10 +62,10 @@ function HrPortal_Exam() {
   // 3. Modal Logic
   const handleOpenModal = (student) => {
     setSelectedStudent(student);
-    setFeedback(student?.feedback || "");
-    setTopic(student?.topic || "");
-    setSelectorName(student?.selectorName || "");
-    setIsSelected( false);
+    setFeedback(student.feedback || "");
+    setTopic(student.topic || "");
+    setSelectorName(student.selectorName || "");
+    setIsSelected(student.select || false);
     setIsModalOpen(true);
   };
 
@@ -87,7 +87,7 @@ function HrPortal_Exam() {
 
       const data = await res.json();
       if (data.success) {
-        setResponse(<div className="fixed top-5 left-1/2 -translate-x-1/2 bg-green-700 text-white px-6 py-2 rounded shadow-lg ">Update Successful!</div>);
+        setResponse(<div className="fixed top-5 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-2 rounded shadow-lg z-[60]">Update Successful!</div>);
         setIsModalOpen(false);
         fetchStudents();
         setTimeout(() => setResponse(null), 3000);
@@ -110,7 +110,6 @@ function HrPortal_Exam() {
       "Email": item.studentEmail,
       "Student ID": item.studentId,
       "College": item.collegeName,
-       
       "Score": item.score,
       "Correct Answers": item.correctAnswers,
       "Selected": item.Aptitude_select? "Yes" : "No",
@@ -145,24 +144,21 @@ function HrPortal_Exam() {
         selectSearch === ""
           ? true
           : selectSearch === "yes"
-            ? student.Aptitude_select === true
-            : student.Aptitude_select === false;
+            ? student.select === true
+            : student.select === false;
 
       return matchStudentId && matchCollegeName && matchCorrectAnswers && matchSelect;
     });
   }, [studentData, studentIdSearch, collegeNameSearch, correctAnswersSearch, selectSearch]);
 
   const columns = [
-    { name: "S.No", cell: (row, index) => index + 1, width: "80px",   },
+    { name: "S.No", cell: (row, index) => index + 1, width: "80px" },
     { name: "Name", selector: row => row.studentName, sortable: true },
     { name: "Email", selector: row => row.studentEmail, sortable: true, width: "220px" },
     { name: "Student ID", selector: row => row.studentId, sortable: true },
     { name: "College", selector: row => row.collegeName, sortable: true, width: "250px" },
-    { name: "Total Aptitude Q", selector: row => row.totalQuestions , sortable: true, width: "250px"  },
-    { name: "Aptitude Correct Answers", selector: row => row.correctAnswers, sortable: true, width: "250px"  },
-     { name: "Aptitude Percentage", selector: row => row.aptitudePercentage, sortable: true, width: "250px" },
-      { name: "Aptitude Selector", selector: row => row.selectorName, sortable: true,  width: "250px" },
-       { name: "Aptitude Status", selector: row => row.Aptitude_select==true ? "Yes" : "No", sortable: true, },
+    { name: "Score", selector: row => row.score, sortable: true },
+    { name: "Select", selector: row => row.select ? "Yes" : "No", sortable: true },
     {
       name: "Action",
       cell: row => (
@@ -179,49 +175,54 @@ function HrPortal_Exam() {
 
   return (
     <div className="p-6 min-h-screen bg-gray-50">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800  pb-2">Selected Candidates For Jam Round</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Selected candidates for Jam Round</h1>
 
       {/* Filters & Download Button Row */}
-     <div className="flex flex-wrap items-end justify-between mb-6 gap-6">
-  {/* Filters - left side */}
-  <div className="flex flex-wrap gap-4">
-    <input
-      type="text"
-      placeholder="Search By College Name"
-      value={collegeNameSearch}
-      onChange={e => setCollegeNameSearch(e.target.value)}
-      className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
-    />
-    <input
-      type="text"
-      placeholder="Search By Student ID"
-      value={studentIdSearch}
-      onChange={e => setstudentIdSearch(e.target.value)}
-      className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
-    />
-    <select
-      value={selectSearch}
-      onChange={e => setSelectSearch(e.target.value)}
-      className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
-    >
-      <option value="">All</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
-    </select>
-  </div>
+      <div className="flex gap-4 mb-6 flex-wrap items-end">
+        <div>
+          <label className="block text-sm font-bold mb-1">College Name</label>
+          <input
+            type="text"
+            placeholder="Search College..."
+            value={collegeNameSearch}
+            onChange={e => setCollegeNameSearch(e.target.value)}
+            className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
 
-  {/* Download button - right side */}
-  <div>
-    <button 
-      onClick={handleDownloadExcel}
-      className="flex items-center gap-2 bg-green-700 text-white px-6 py-2 rounded font-bold"
-    >
-      <Download size={18} />
-      Download Excel
-    </button>
-  </div>
-</div>
+        <div>
+          <label className="block text-sm font-bold mb-1">Student ID</label>
+          <input
+            type="text"
+            placeholder="Search ID..."
+            value={studentIdSearch}
+            onChange={e => setstudentIdSearch(e.target.value)}
+            className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
 
+        <div>
+          <label className="block text-sm font-bold mb-1">Shortlisted</label>
+          <select
+            value={selectSearch}
+            onChange={e => setSelectSearch(e.target.value)}
+            className="border px-3 py-2 rounded w-64 outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="">All</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        {/* Download Button positioned right after Shortlisted input */}
+        <button 
+          onClick={handleDownloadExcel}
+          className="flex items-center justify-center gap-2 bg-green-700 text-white px-6 py-[9px] rounded font-bold hover:bg-green-800 transition shadow-sm"
+        >
+          <Download size={18} />
+          Download Excel
+        </button>
+      </div>
 
       <div className="bg-white rounded-lg shadow">
         <DataTable
@@ -330,17 +331,17 @@ function HrPortal_Exam() {
             </div>
 
             <div className="p-5 border-t bg-gray-50 flex justify-end gap-4">
-              {/* <button
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="px-6 py-2.5 font-semibold text-gray-600 hover:bg-gray-200 rounded-lg transition"
               >
                 Discard
-              </button> */}
+              </button>
               <button
                 onClick={handleSubmit}
                 className="px-8 py-2.5 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 shadow-lg shadow-green-200 transition-all active:scale-95"
               >
-                Submit 
+                Submit & Save Result
               </button>
             </div>
           </div>
