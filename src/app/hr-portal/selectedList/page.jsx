@@ -116,7 +116,7 @@ function HrPortal_Exam() {
         <div className="flex gap-3 ml-auto">
           <button
             onClick={downloadExcel}
-            className="flex items-center gap-2 bg-blue-700 text-white px-5 py-2.5 rounded font-bold hover:bg-blue-800 transition shadow-md active:scale-95"
+            className="flex items-center justify-center gap-2 bg-green-700 text-white px-6 py-[9px] rounded font-bold hover:bg-green-800 transition shadow-sm"
           >
             <Download size={18} /> Download Excel
           </button>

@@ -100,7 +100,7 @@ function HrPortal_Exam() {
           Selected students submitted successfully!
         </div>
       );
-      setSelectedRows([]); 
+      setSelectedRows([]);
     } else {
       setResponse(
         <div className='fixed top-10 left-1/2 -translate-x-1/2 z-50 bg-red-100 border-2 border-red-600 text-red-800 px-6 py-2 rounded shadow-lg font-bold'>
@@ -186,8 +186,34 @@ function HrPortal_Exam() {
   ];
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-1 bg-gray-50 min-h-screen">
+      <div className="flex items-center ">
+
       <h1 className="text-2xl font-bold mb-4 mt-4">Aptitude Result</h1>
+      {/* select and disselect */}
+      <div className="flex ml-auto gap-6 h-10">
+      <button
+        onClick={() => {
+          if (selectedRows.length === filteredData.length) {
+            setSelectedRows([]);
+          } else {
+            setSelectedRows(filteredData);
+          }
+        }}
+        className="bg-yellow-600 text-white px-6  rounded font-bold flex items-center gap-2 hover:bg-yellow-700 transition shadow-md ml-auto"
+      >
+        {selectedRows.length === filteredData.length ? "Deselect All" : "Select All"}
+      </button>
+
+      {/* Excel Download Button */}
+      <button
+        onClick={downloadExcel}
+        className="flex items-center justify-center gap-2 bg-green-700 text-white px-6 py-[9px] rounded font-bold hover:bg-green-800 transition shadow-sm"
+      >
+        <Download size={18} /> Download Excel
+      </button>
+      </div>
+      </div>
 
       {/* Filters & Actions Section */}
       <div className="flex gap-4 mb-4 flex-wrap bg-white p-4 rounded shadow-sm items-center">
@@ -219,34 +245,12 @@ function HrPortal_Exam() {
           onChange={e => setPercentageSearch(e.target.value)}
           className="border px-3 py-2 rounded w-60 outline-none focus:ring-2 focus:ring-blue-400"
         />
-        
         {/* Bulk Select Button */}
         <button
           onClick={handleBulkSelect}
           className="bg-green-600 text-white px-6 py-2 rounded font-bold flex items-center gap-2 hover:bg-green-700 transition shadow-md"
         >
           <CheckCircle size={18} /> Select
-        </button>
-
-        <button
-  onClick={() => {
-    if (selectedRows.length === filteredData.length) {
-      setSelectedRows([]);
-    } else {
-      setSelectedRows(filteredData);
-    }
-  }}
-  className="bg-yellow-600 text-white px-6 py-2 rounded font-bold flex items-center gap-2 hover:bg-yellow-700 transition shadow-md"
->
-  {selectedRows.length === filteredData.length ? "Deselect All" : "Select All"}
-</button>
-
-        {/* Excel Download Button */}
-        <button
-          onClick={downloadExcel}
-          className="flex items-center gap-2 bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition shadow-md"
-        >
-          <Download size={18} /> Download Excel
         </button>
       </div>
 
