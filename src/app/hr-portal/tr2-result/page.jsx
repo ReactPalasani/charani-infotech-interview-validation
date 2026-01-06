@@ -30,7 +30,7 @@ function HrPortal_Exam() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("/api/tr1-selected-candiate");
+        const res = await fetch("/api/tr1-selected-candiates");
         const data = await res.json();
 
         if (data.success) {
