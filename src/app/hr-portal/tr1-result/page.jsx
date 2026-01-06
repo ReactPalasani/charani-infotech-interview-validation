@@ -170,7 +170,7 @@ function HrPortal_Exam() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6  pb-2">Selected Candidates For Technical Round</h1>
+      <h1 className="text-2xl font-bold mb-4 mt-4">Technical Round-1 Result</h1>
 
       <div className="flex gap-4 mb-6 flex-wrap items-end bg-white p-5 rounded-lg shadow-sm">
         <div className="flex flex-col gap-1">

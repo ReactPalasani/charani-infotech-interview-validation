@@ -178,7 +178,7 @@ function HrPortal_Exam() {
 
   return (
     <div className="p-6 min-h-screen bg-gray-50">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Selected candidates for Jam Round</h1>
+      <h1 className="text-2xl font-bold mb-4 mt-4">Selected for Jam</h1>
 
       {/* Filters & Download Button Row */}
       <div className="flex gap-4 mb-6 flex-wrap items-end">
