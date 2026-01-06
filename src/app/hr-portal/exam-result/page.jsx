@@ -228,6 +228,19 @@ function HrPortal_Exam() {
           <CheckCircle size={18} /> Select
         </button>
 
+        <button
+  onClick={() => {
+    if (selectedRows.length === filteredData.length) {
+      setSelectedRows([]);
+    } else {
+      setSelectedRows(filteredData);
+    }
+  }}
+  className="bg-yellow-600 text-white px-6 py-2 rounded font-bold flex items-center gap-2 hover:bg-yellow-700 transition shadow-md"
+>
+  {selectedRows.length === filteredData.length ? "Deselect All" : "Select All"}
+</button>
+
         {/* Excel Download Button */}
         <button
           onClick={downloadExcel}
