@@ -98,28 +98,28 @@ function HrPortal_Exam() {
       alert("Error updating result");
     }
   };
-const[statusData, setStatus]= useState();
+// const[statusData, setStatus]= useState();
 
-useEffect(() => {
-  const fetchJamStatus = async () => {
-    try {
-      const res = await fetch("/api/tr1-Exam-Result", {
-        method: "GET",
-      });
+// useEffect(() => {
+//   const fetchJamStatus = async () => {
+//     try {
+//       const res = await fetch("/api/tr1-Exam-Result", {
+//         method: "GET",
+//       });
 
-      const data = await res.json();
+//       const data = await res.json();
 
-      if (data?.success) {
-        setResponse({ type: "success", message: "Update Successful!" });
-        setStatus(data.data);
-      }
-    } catch (error) {
-      setResponse({ type: "error", message: "Error updating result" });
-    }
-  };
+//       if (data?.success) {
+//         setResponse({ type: "success", message: "Update Successful!" });
+//         setStatus(data.data);
+//       }
+//     } catch (error) {
+//       setResponse({ type: "error", message: "Error updating result" });
+//     }
+//   };
 
-  fetchJamStatus();
-}, [isModalOpen]);
+//   fetchJamStatus();
+// }, [isModalOpen]);
 
 
 
