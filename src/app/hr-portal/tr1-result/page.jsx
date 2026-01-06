@@ -77,7 +77,7 @@ function HrPortal_Exam() {
       };
 
       try {
-        const res = await fetch("/api/jam-result", {
+        const res = await fetch("/api/tr1-selected-candiates", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

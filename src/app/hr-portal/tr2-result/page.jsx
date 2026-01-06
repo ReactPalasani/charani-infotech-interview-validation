@@ -30,7 +30,7 @@ function HrPortal_Exam() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("/api/result");
+        const res = await fetch("/api/tr1-selected-candiate");
         const data = await res.json();
 
         if (data.success) {
@@ -85,7 +85,7 @@ function HrPortal_Exam() {
       };
 
       try {
-        const res = await fetch("/api/jam-result", {
+        const res = await fetch("/api/tr2-selected-candiate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

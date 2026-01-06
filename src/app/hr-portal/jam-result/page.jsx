@@ -19,7 +19,7 @@ function HrPortal_Exam() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [studentId, setStudentId] = useState(null);
+   const [studentId, setStudentId] = useState(null);
 
   // Form State for Popup
   const [feedback, setFeedback] = useState("");
@@ -98,31 +98,8 @@ function HrPortal_Exam() {
       alert("Error updating result");
     }
   };
-// const[statusData, setStatus]= useState();
 
-// useEffect(() => {
-//   const fetchJamStatus = async () => {
-//     try {
-//       const res = await fetch("/api/tr1-Exam-Result", {
-//         method: "GET",
-//       });
-
-//       const data = await res.json();
-
-//       if (data?.success) {
-//         setResponse({ type: "success", message: "Update Successful!" });
-//         setStatus(data.data);
-//       }
-//     } catch (error) {
-//       setResponse({ type: "error", message: "Error updating result" });
-//     }
-//   };
-
-//   fetchJamStatus();
-// }, [isModalOpen]);
-
-
-
+  // --- EXCEL DOWNLOAD LOGIC ---
   const handleDownloadExcel = () => {
     if (filteredData.length === 0) {
       alert("No data available to download");
@@ -137,14 +114,12 @@ function HrPortal_Exam() {
       "College": item.collegeName,
       "Score": item.score,
       "Correct Answers": item.correctAnswers,
-      "Selected": item.Aptitude_select ? "Yes" : "No",
+      "Selected": item.Aptitude_select? "Yes" : "No",
       "Invigilator": item.selectorName || "N/A",
       "Topic": item.topic || "N/A",
       "Feedback": item.feedback || "N/A",
       "Date": item.submittedAt || "N/A"
     }));
-
-
 
     const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
@@ -198,7 +173,7 @@ function HrPortal_Exam() {
       ),
       ignoreRowClick: true,
     },
-    { name: "Jam Select", selector: row => row.Jam_selected, sortable: true },
+
   ];
 
   return (
@@ -243,7 +218,7 @@ function HrPortal_Exam() {
         </div>
 
         {/* Download Button positioned right after Shortlisted input */}
-        <button
+        <button 
           onClick={handleDownloadExcel}
           className="flex items-center justify-center gap-2 bg-green-700 text-white px-6 py-[9px] rounded font-bold hover:bg-green-800 transition shadow-sm"
         >
@@ -267,14 +242,14 @@ function HrPortal_Exam() {
       {isModalOpen && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
-
+            
             <div className="flex justify-between items-center p-5 border-b bg-gray-50">
               <div>
                 <h2 className="text-xl font-bold text-gray-800">Review Result</h2>
                 <p className="text-sm text-gray-500">ID: {selectedStudent.studentId}</p>
               </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
+              <button 
+                onClick={() => setIsModalOpen(false)} 
                 className="p-2 hover:bg-red-100 hover:text-red-600 rounded-full transition-colors"
               >
                 <X size={24} />
@@ -294,16 +269,16 @@ function HrPortal_Exam() {
                 </div>
 
                 <div>
-                  <label className="font-bold flex items-center gap-2 mb-2 text-gray-700">
-                    <NotepadText size={18} /> Topic
-                  </label>
-                  <input
-                    type="text"
-                    value={topic}
-                    onChange={e => setTopic(e.target.value)}
-                    className="border-2 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-400 outline-none border-gray-200"
-                    placeholder="Enter Topic Here"
-                  />
+                   <label className="font-bold flex items-center gap-2 mb-2 text-gray-700">
+                     <NotepadText size={18} /> Topic
+                   </label>
+                   <input
+                     type="text"
+                     value={topic}
+                     onChange={e => setTopic(e.target.value)}
+                     className="border-2 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-400 outline-none border-gray-200"
+                     placeholder="Enter Topic Here"
+                   />
                 </div>
               </div>
 
