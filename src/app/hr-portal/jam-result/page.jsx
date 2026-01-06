@@ -99,7 +99,17 @@ function HrPortal_Exam() {
     }
   };
 
-  // --- EXCEL DOWNLOAD LOGIC ---
+  useEffect( async()=>{
+    async function FetchJamStatus (){
+   const res = await fetch("/api/tr1-Exam-Result", {
+        method: "GET",
+       
+      });
+    }
+
+  },[isModalOpen])
+
+ 
   const handleDownloadExcel = () => {
     if (filteredData.length === 0) {
       alert("No data available to download");
@@ -120,6 +130,8 @@ function HrPortal_Exam() {
       "Feedback": item.feedback || "N/A",
       "Date": item.submittedAt || "N/A"
     }));
+
+
 
     const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
@@ -160,7 +172,7 @@ function HrPortal_Exam() {
     { name: "Student ID", selector: row => row.studentId, sortable: true },
     { name: "College", selector: row => row.collegeName, sortable: true, width: "250px" },
     { name: "Score", selector: row => row.score, sortable: true },
-    { name: "Aptitude_select", selector: row => row.Aptitude_select ? "Yes" : "No", sortable: true },
+    { name: "Aptitude Select", selector: row => row.Aptitude_select ? "Yes" : "No", sortable: true },
     {
       name: "Action",
       cell: row => (
@@ -173,6 +185,7 @@ function HrPortal_Exam() {
       ),
       ignoreRowClick: true,
     },
+      { name: "Jam Select", selector: row => row.Jam_selected , sortable: true },
   ];
 
   return (
