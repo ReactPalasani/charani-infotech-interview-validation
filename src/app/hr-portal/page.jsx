@@ -89,7 +89,7 @@ function HrPortal_Exam() {
         const data = await res.json();
         if (!data.success) hasError = true;
       } catch (error) {
-        console.error("Submission Error:", error);
+
         hasError = true;
       }
     }

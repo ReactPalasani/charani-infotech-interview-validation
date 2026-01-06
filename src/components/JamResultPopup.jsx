@@ -40,7 +40,7 @@ function JamResultPage() {
           setStudentData(flattened);
         }
       } catch (error) {
-        console.error("Error fetching JAM results:", error);
+
       } finally {
         setLoading(false);
       }

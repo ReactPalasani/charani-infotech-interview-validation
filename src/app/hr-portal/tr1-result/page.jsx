@@ -42,7 +42,7 @@ function HrPortal_Exam() {
           setStudentData(flattened);
         }
       } catch (error) {
-        console.error("Fetch error:", error);
+
       }
     };
     fetchStudents();

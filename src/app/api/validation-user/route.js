@@ -24,7 +24,9 @@ export async function POST(req) {
     // 🔹 Fetch college data
     const snapshot = await db.ref(`Tr1Result/${studentId}`).once("value");
 
+
     if (!snapshot.exists()) {
+
       return NextResponse.json({
         success: false,
         message: "College ID not found",
@@ -37,7 +39,7 @@ export async function POST(req) {
     snapshot.forEach((child) => {
       const data = child.val();
 
-      if (data.studentEmail === email && data.Aptitude_select === true) {
+      if (data.studentEmail === email && data.jam_selected === true) {
         isEligible = true;
         userData = data;
 
@@ -45,6 +47,7 @@ export async function POST(req) {
     });
 
     if (!isEligible) {
+
       return NextResponse.json({
         success: false,
         message: "User not eligible or not selected",
@@ -52,6 +55,7 @@ export async function POST(req) {
     }
 
     return NextResponse.json({
+
       success: true,
       message: "User validated successfully",
       data: {

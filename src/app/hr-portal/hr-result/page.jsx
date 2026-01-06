@@ -95,7 +95,7 @@ function HrPortal_Exam() {
         if (data.success) successCount++;
         else hasError = true;
       } catch (error) {
-        console.error("Submission Error:", error);
+
         hasError = true;
       }
     }

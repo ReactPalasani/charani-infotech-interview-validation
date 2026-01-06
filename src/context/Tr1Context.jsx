@@ -102,7 +102,7 @@ export function ExamProvider({ children }) {
       setQuestions(finalQuestions);
       setCurrentIndex(0);
     } catch (err) {
-      console.error("Failed to load questions", err);
+
     }
   }
 

@@ -8,7 +8,7 @@ import { useState } from "react";
 
 function UserValidation() {
   const router = useRouter();
-const [responce, setResponse] = useState();
+  const [responce, setResponse] = useState();
   const validationSchema = Yup.object({
     studentId: Yup.string()
       .required("College ID is required")
@@ -40,19 +40,19 @@ const [responce, setResponse] = useState();
 
 
       if (data.success) {
-       localStorage.setItem("StudentData", JSON.stringify(data.data));
-            setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold mt-6'> ✅ Allowed to attend Technical Round</div>);
-    setTimeout(() => {
-              router.push("/technical-round-1");
-              setResponse("");
-    }, 2000);
+        localStorage.setItem("StudentData", JSON.stringify(data.data));
+        setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold mt-6'> ✅ Allowed to attend Technical Round</div>);
+        setTimeout(() => {
+          router.push("/technical-round-1");
+          setResponse("");
+        }, 2000);
 
       } else {
-                    setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold mt-6'> ❌ {data.message} </div>);
+        setResponse(<div className='flex justify-center align-middle text-center text-red-800 font-bold mt-6'> ❌ {data.message} </div>);
 
-                    setTimeout(() => {
-                      setResponse("");
-                    }, 2000);
+        setTimeout(() => {
+          setResponse("");
+        }, 2000);
       }
 
     },
@@ -78,8 +78,8 @@ const [responce, setResponse] = useState();
                 placeholder="Enter Your Roll No"
                 {...formik.getFieldProps("studentId")}
                 className={`p-2 border rounded ${formik.touched.studentId && formik.errors.studentId
-                    ? "border-red-500"
-                    : "border-gray-300"
+                  ? "border-red-500"
+                  : "border-gray-300"
                   }`}
               />
               {formik.touched.studentId && formik.errors.studentId && (
@@ -98,8 +98,8 @@ const [responce, setResponse] = useState();
                 placeholder="Enter Your Email"
                 {...formik.getFieldProps("email")}
                 className={`p-2 border rounded ${formik.touched.email && formik.errors.email
-                    ? "border-red-500"
-                    : "border-gray-300"
+                  ? "border-red-500"
+                  : "border-gray-300"
                   }`}
               />
               {formik.touched.email && formik.errors.email && (
