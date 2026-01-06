@@ -28,7 +28,7 @@ function HrPortal_Exam() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("/api/result"); 
+        const res = await fetch("/api/tr1-result"); 
         const data = await res.json();
         if (data.success) {
           const flattened = Object.entries(data.data || {}).flatMap(

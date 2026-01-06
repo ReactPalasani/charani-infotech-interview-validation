@@ -19,6 +19,7 @@ function HrPortal_Exam() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+   const [studentId, setStudentId] = useState(null);
 
   // Form State for Popup
   const [feedback, setFeedback] = useState("");
@@ -61,6 +62,7 @@ function HrPortal_Exam() {
 
   // 3. Modal Logic
   const handleOpenModal = (student) => {
+    setStudentId(student)
     setSelectedStudent(student);
     setFeedback(student.feedback || "");
     setTopic(student.topic || "");
@@ -79,7 +81,7 @@ function HrPortal_Exam() {
         jam_selected: isSelected
       };
 
-      const res = await fetch("/api/jam-result", {
+      const res = await fetch("/api/tr1-Exam-Result", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
