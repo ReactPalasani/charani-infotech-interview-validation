@@ -20,6 +20,7 @@ const validationSchema = Yup.object({
     branch: Yup.string().required('Branch is required'),
     year: Yup.string().required('Year is required'),
     backLogs: Yup.number().min(0, 'Cannot be negative').required('Required'),
+    dataOfBirth:Yup.string().required("Data of birth is required")
 });
 
 export default function ExamPage() {
@@ -38,7 +39,8 @@ export default function ExamPage() {
             gender: "",
             branch: "",
             year: "",
-            backLogs: 0
+            backLogs: 0,
+            dataOfBirth:""
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -54,16 +56,20 @@ export default function ExamPage() {
                 if (data.success) {
                     setResponse(<div className='flex justify-center align-middle text-center text-green-800 font-bold'>{data.message} </div>);
                     localStorage.setItem('StudentData', JSON.stringify(values));
-                    setTimeout(() => {
+                   
                         router.push("/instructions");
-                    }, 2000);
-
+                    
                 } else {
                     setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold'> Student-Id Already Exists </div>);
                 }
             } catch (error) {
                 setResponse(<div className='flex justify-center align-middle text-center text-red-500 font-bold mt-5'> Student-Id Already Exists </div>);
 
+            }
+            finally{
+                setTimeout(() => {
+                    setResponse("");
+                }, 2000);
             }
         }
     });
@@ -213,12 +219,22 @@ export default function ExamPage() {
                             </div>
                         </div>
 
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Backlogs */}
                         <div className="flex flex-col gap-1">
                             <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><History className="w-4 h-4" /> Backlogs <span className='text-red-600'>*</span></label>
                             <input id="backLogs" name="backLogs" type="number" onChange={formik.handleChange} value={formik.values.backLogs}
                                 className="p-2 border border-gray-300 rounded-lg focus:border-blue-900 outline-none" />
                             {formik.touched.backLogs && formik.errors.backLogs && <div className='text-red-600 text-xs'>{formik.errors.backLogs}</div>}
+                        </div>
+
+                              {/* Data of birth */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm font-bold text-blue-900 flex items-center gap-2"><Calendar className="w-4 h-4" /> Date of birth <span className='text-red-600'>*</span></label>
+                            <input id="dataOfBirth" name="dataOfBirth" type="date" onChange={formik.handleChange} value={formik.values.dataOfBirth}
+                                className="p-2 border border-gray-300 rounded-lg focus:border-blue-900 outline-none" />
+                            {formik.touched.dataOfBirth && formik.errors.dataOfBirth && <div className='text-red-600 text-xs'>{formik.errors.dataOfBirth}</div>}
+                        </div>
                         </div>
 
                         {/* Buttons Container */}
