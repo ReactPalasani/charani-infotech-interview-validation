@@ -59,11 +59,7 @@ export default function SubmitExamButton() {
       if (data.success) {
         localStorage.removeItem("exam-time");
         setResponse(<div className='flex justify-center align-middle text-center text-green-800 mt-6 font-bold'>Exam submitted successfully! </div>);
-        setTimeout(() => {
            router.push("/result");
-           setResponse("");
-        },2000);
-       
       } else {
       setResponse(<div className='flex justify-center align-middle text-center text-red-800 mt-6 font-bold'> Exam Submition Failed </div>);
          setTimeout(() => {
