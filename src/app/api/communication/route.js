@@ -23,8 +23,17 @@ export async function GET() {
     const questionsArray = Array.isArray(questions)
       ? questions
       : Object.values(questions);
-
-    const totalQuestions = questionsArray.length;
+   
+               const validQuestions = questionsArray.filter(q =>
+      q &&
+      q.question1 &&
+      q.A &&
+      q.B &&
+      q.C &&
+      q.D &&
+      q.Answer
+    );
+    const totalQuestions = validQuestions.length;
     const questionsPerBatch = 20;
 
     // 🔹 Fetch counter
@@ -32,20 +41,31 @@ export async function GET() {
     let counter = Number(counterSnap.val()) || 0;
 
     // 🔹 Shuffle ONCE per cycle
-    let shuffled = shuffleArray([...questionsArray]);
+    let shuffled = shuffleArray([...validQuestions]);
 
     // 🔹 If remaining questions < 20 → reset counter & reshuffle
     if (counter + questionsPerBatch > totalQuestions) {
       counter = 0;
-      shuffled = shuffleArray([...questionsArray]);
+      shuffled = shuffleArray([...validQuestions]);
     }
+
+   
 
     const startIndex = counter;
     const endIndex = startIndex + questionsPerBatch;
 
-    const batchQuestions = shuffled.slice(startIndex, endIndex);
+         const batchQuestions = shuffled
+      .slice(startIndex, endIndex)
+      .map(q => ({
+        question1: q.question1 ?? null,
+        A: q.A ?? null,
+        B: q.B ?? null,
+        C: q.C ?? null,
+        D: q.D ?? null,
+        Answer: q.Answer ?? null, 
+      }));
 
-    // 🔹 Update counter for next request
+   
     await set(counterRef, endIndex);
 
     return NextResponse.json({

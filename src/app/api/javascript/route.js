@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/firebase";
 import { ref, get, set } from "firebase/database";
+import { shuffleArray } from "@/app/utils/shuffle";
 
 export async function GET() {
   try {
-    const dbRef = ref(database, "javascript/");
-    const counterRef = ref(database, "JavascriptCounter/");
+    const dbRef = ref(database, "javascript");
+    const counterRef = ref(database, "JavascriptCounter");
 
     // 🔹 Fetch questions
     const snapshot = await get(dbRef);
@@ -23,22 +24,55 @@ export async function GET() {
       ? questions
       : Object.values(questions);
 
-    const totalQuestions = questionsArray.length;
+    // 🔹 Remove questions with ANY null / empty value
+    const validQuestions = questionsArray.filter(q =>
+      q &&
+      q.question1 &&
+      q.A &&
+      q.B &&
+      q.C &&
+      q.D &&
+      q.Answer
+    );
+
+    const totalQuestions = validQuestions.length;
     const questionsPerBatch = 10;
+
+    if (totalQuestions < questionsPerBatch) {
+      return NextResponse.json({
+        success: false,
+        data: [],
+        message: "Not enough valid questions",
+      });
+    }
 
     // 🔹 Fetch counter
     const counterSnap = await get(counterRef);
     let counter = Number(counterSnap.val()) || 0;
 
-    // 🔹 Reset counter if exceeded
-    if (counter >= totalQuestions) {
+    // 🔹 Shuffle questions
+    let shuffled = shuffleArray([...validQuestions]);
+
+    // 🔹 Reset counter if needed
+    if (counter + questionsPerBatch > totalQuestions) {
       counter = 0;
+      shuffled = shuffleArray([...validQuestions]);
     }
 
     const startIndex = counter;
-    const endIndex = Math.min(counter + questionsPerBatch, totalQuestions);
+    const endIndex = startIndex + questionsPerBatch;
 
-    const batchQuestions = questionsArray.slice(startIndex, endIndex);
+    // 🔹 Hide correct answer
+    const batchQuestions = shuffled
+      .slice(startIndex, endIndex)
+      .map(q => ({
+        question1: q.question1,
+        A: q.A,
+        B: q.B,
+        C: q.C,
+        D: q.D,
+        Answer: q.Answer, // 🔐 hidden
+      }));
 
     // 🔹 Update counter
     await set(counterRef, endIndex);
@@ -50,6 +84,7 @@ export async function GET() {
       startIndex,
       endIndex,
     });
+
   } catch (error) {
     return NextResponse.json(
       { success: false, message: error.message },

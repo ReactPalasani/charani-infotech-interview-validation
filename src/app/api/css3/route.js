@@ -1,51 +1,91 @@
-
 import { NextResponse } from "next/server";
 import { database } from "@/lib/firebase";
-import { ref, push, set, get } from "firebase/database";
+import { ref, get, set } from "firebase/database";
+import { shuffleArray } from "@/app/utils/shuffle";
 
 export async function GET() {
   try {
-    const dbRef = ref(database, "Css/");
-    const counterRef = ref(database, "CssCounter/"); 
+    const dbRef = ref(database, "Css");
+    const counterRef = ref(database, "CssCounter");
 
+    // 🔹 Fetch questions
     const snapshot = await get(dbRef);
     const questions = snapshot.val();
 
-     if (!questions) {
-      return NextResponse.json({ success: false, data: [], message: "No questions found" });
+    if (!questions) {
+      return NextResponse.json({
+        success: false,
+        data: [],
+        message: "No questions found",
+      });
     }
 
-        const questionsArray = Array.isArray(questions) ? questions : Object.values(questions);
-    const totalQuestions = questionsArray.length;
+    const questionsArray = Array.isArray(questions)
+      ? questions
+      : Object.values(questions);
 
-    console.log("totalQuestions", totalQuestions);
+    // 🔹 Remove questions with ANY null / empty value
+    const validQuestions = questionsArray.filter(q =>
+      q &&
+      q.question1 &&
+      q.A &&
+      q.B &&
+      q.C &&
+      q.D &&
+      q.Answer
+    );
 
+    const totalQuestions = validQuestions.length;
+    const questionsPerBatch = 10;
 
-        const counterSnap = await get(counterRef);
-    let counter = counterSnap.val() || 0;
-
-      const questionsPerBatch = 10;
-    let startIndex = counter;
-    let endIndex = counter + questionsPerBatch;
-
-    if (endIndex >= totalQuestions) {
-      endIndex = totalQuestions;
-      counter = 0; // reset counter after reaching the end
-    } else {
-      counter = endIndex; // update counter for next fetch
+    if (totalQuestions < questionsPerBatch) {
+      return NextResponse.json({
+        success: false,
+        data: [],
+        message: "Not enough valid questions",
+      });
     }
 
-     const batchQuestions = questionsArray.slice(startIndex, endIndex);
-      await set(counterRef, counter);
+    // 🔹 Fetch counter
+    const counterSnap = await get(counterRef);
+    let counter = Number(counterSnap.val()) || 0;
 
-    console.log("count",counter);
+    // 🔹 Shuffle questions
+    let shuffled = shuffleArray([...validQuestions]);
+
+    // 🔹 Reset counter if needed
+    if (counter + questionsPerBatch > totalQuestions) {
+      counter = 0;
+      shuffled = shuffleArray([...validQuestions]);
+    }
+
+    const startIndex = counter;
+    const endIndex = startIndex + questionsPerBatch;
+
+    // 🔹 Hide correct answer
+    const batchQuestions = shuffled
+      .slice(startIndex, endIndex)
+      .map(q => ({
+        question1: q.question1,
+        A: q.A,
+        B: q.B,
+        C: q.C,
+        D: q.D,
+        Answer: q.Answer, // 🔐 hidden
+      }));
+
+    // 🔹 Update counter
+    await set(counterRef, endIndex);
 
     return NextResponse.json({
       success: true,
-      data: snapshot.val(),
+      data: batchQuestions,
+      totalQuestions,
+      startIndex,
+      endIndex,
     });
-  } catch (error) {
 
+  } catch (error) {
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 500 }
