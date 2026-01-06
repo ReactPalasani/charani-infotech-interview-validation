@@ -10,6 +10,7 @@ const tabs = [
   { label: "Technical-1", path: "/hr-portal/tr1-result" },
   { label: "Technical-2", path: "/hr-portal/tr2-result" },
   { label: "HR", path: "/hr-portal/hr-result" },
+  { label: "Selected Candiates", path: "/hr-portal/selectedList" },
   
 ];
 

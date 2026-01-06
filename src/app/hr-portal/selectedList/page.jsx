@@ -30,7 +30,7 @@ function HrPortal_Exam() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("/api/tr2-selected-candiate");
+        const res = await fetch("/api/finalSelectCandiates");
         const data = await res.json();
 
         if (data.success) {
@@ -54,81 +54,6 @@ function HrPortal_Exam() {
     };
     fetchStudents();
   }, []);
-
-  // 3. Move Logic
-  const handleMoveToTechnical = async () => {
-    if (selectedRows.length === 0) {
-      alert("Please select at least one student.");
-      return;
-    }
-
-    setResponse(<div className='fixed top-10 left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-6 py-2 rounded shadow-lg font-bold'>Processing Move...</div>);
-
-    let hasError = false;
-    let successCount = 0;
-
-    for (const student of selectedRows) {
-      const payload = {
-        studentName: student.studentName,
-        studentEmail: student.studentEmail,
-        studentId: student.studentId,
-        collegeName: student.collegeName,
-        totalQuestions: student.totalQuestions,
-        correctAnswers: student.correctAnswers,
-        submittedAt: student.submittedAt,
-        percentage: student.percentage,
-        feedback: "Promoted to Technical Round",
-        topic: "Technical Interview Round",
-        score: student.correctAnswers,
-        selectorName: "HR_Admin",
-        Aptitude_select: true
-      };
-
-      try {
-        const res = await fetch("/api/finalSelectCandiates", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        const data = await res.json();
-        if (data.success) successCount++;
-        else hasError = true;
-      } catch (error) {
-        console.error("Submission Error:", error);
-        hasError = true;
-      }
-    }
-
-    if (!hasError) {
-      setResponse(
-        <div className='fixed top-10 left-1/2 -translate-x-1/2 z-50 bg-green-100 border-2 border-green-600 text-green-800 px-6 py-2 rounded shadow-lg font-bold flex items-center gap-2'>
-          <CheckCircle size={18} /> {successCount} Students moved successfully!
-        </div>
-      );
-      setSelectedRows([]); 
-    } else {
-      setResponse(
-        <div className='fixed top-10 left-1/2 -translate-x-1/2 z-50 bg-red-100 border-2 border-red-600 text-red-800 px-6 py-2 rounded shadow-lg font-bold flex items-center gap-2'>
-          <XCircle size={18} /> Error moving some students.
-        </div>
-      );
-    }
-    setTimeout(() => setResponse(null), 3000);
-  };
-
-  const handleCheckboxChange = (student) => {
-    setSelectedRows((prev) =>
-      prev.find((s) => s.id === student.id)
-        ? prev.filter((s) => s.id !== student.id)
-        : [...prev, student]
-    );
-  };
-
-  const handleSelectAll = (e) => {
-    if (e.target.checked) setSelectedRows(filteredData);
-    else setSelectedRows([]);
-  };
 
   // 4. Filtering Logic
   const filteredData = useMemo(() => {
@@ -158,31 +83,6 @@ function HrPortal_Exam() {
     { name: "Email", selector: row => row.studentEmail, sortable: true, width: "220px" },
     { name: "Student ID", selector: row => row.studentId, sortable: true },
     { name: "College Name", selector: row => row.collegeName, sortable: true, width: "200px" },
-    { name: "Total Qns", selector: row => row.totalQuestions, sortable: true, width: "100px" },
-    { name: "Score", selector: row => row.correctAnswers, sortable: true, width: "90px" },
-    { name: "Percent", selector: row => `${row.percentage}%`, sortable: true, width: "90px" },
-    {
-      name: (
-        <div className="flex items-center gap-2">
-          <input 
-            type="checkbox" 
-            className="w-4 h-4 cursor-pointer" 
-            onChange={handleSelectAll}
-            checked={selectedRows.length === filteredData.length && filteredData.length > 0}
-          />
-          <span className="text-xs">Select All</span>
-        </div>
-      ),
-      width: "120px",
-      cell: row => (
-        <input
-          type="checkbox"
-          className="w-5 h-5 cursor-pointer accent-blue-600"
-          checked={!!selectedRows.find((s) => s.id === row.id)}
-          onChange={() => handleCheckboxChange(row)}
-        />
-      ),
-    },
   ];
 
   if (!hasMounted) return null;
@@ -213,30 +113,7 @@ function HrPortal_Exam() {
             className="border px-3 py-2 rounded w-44 outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-bold text-gray-500 uppercase">Min Score</label>
-          <input
-            type="number"
-            value={correctAnswersSearch}
-            onChange={e => setCorrectAnswersSearch(e.target.value)}
-            className="border px-3 py-2 rounded w-32 outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
-
         <div className="flex gap-3 ml-auto">
-          <button
-            onClick={handleMoveToTechnical}
-            disabled={selectedRows.length === 0}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded font-bold transition shadow-md ${
-              selectedRows.length > 0 
-              ? "bg-green-600 text-white hover:bg-green-700 active:scale-95" 
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <UserPlus size={18} /> Move to Next Round ({selectedRows.length})
-          </button>
-
           <button
             onClick={downloadExcel}
             className="flex items-center gap-2 bg-blue-700 text-white px-5 py-2.5 rounded font-bold hover:bg-blue-800 transition shadow-md active:scale-95"
