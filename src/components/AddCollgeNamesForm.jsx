@@ -27,9 +27,10 @@ export default function AddCollegeNameForm() {
        Formik
     ========================= */
     const formik = useFormik({
-        initialValues: { collegeName: "" },
+        initialValues: { collegeName: "", status: "" },
         validationSchema: Yup.object({
             collegeName: Yup.string().required("College name is required"),
+            status: Yup.string().required(" Status is required")
         }),
         onSubmit: async (values, { resetForm }) => {
             try {
@@ -64,7 +65,7 @@ export default function AddCollegeNameForm() {
                     </p>
                 );
             }
-            finally{
+            finally {
                 setTimeout(() => {
                     setResponse("")
                 }, 2000);
@@ -110,6 +111,25 @@ export default function AddCollegeNameForm() {
                             </p>
                         )}
                     </div>
+
+                    <div>
+                        <select
+                            name="status"
+                            value={formik.values.status}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className="border px-3 py-2 rounded w-full"
+                        >
+                            <option value="">Select Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+
+                        {formik.touched.status && formik.errors.status && (
+                            <p className="text-red-500 text-sm">{formik.errors.status}</p>
+                        )}
+                    </div>
+
 
                     {/* Button */}
                     <button
