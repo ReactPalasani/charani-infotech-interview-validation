@@ -39,7 +39,7 @@ export async function POST(req) {
     snapshot.forEach((child) => {
       const data = child.val();
 
-      if (data.studentEmail === email && data.jam_selected === true) {
+      if (data.studentEmail === email && ( data.jam_selected === true || select===true || Aptitude_select===true)  ) {
         isEligible = true;
         userData = data;
 
