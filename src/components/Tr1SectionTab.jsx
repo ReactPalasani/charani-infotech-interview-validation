@@ -13,7 +13,7 @@ export default function SectionTabs() {
   const { section, setSection } = useExam();
 
   return (
-    <div className="flex border w-1/2">
+    <div className="flex border w-1/2 min-w-8/12">
       {SECTIONS.map(({ key, label, icon: Icon }) => {
         const isActive = section === key;
 
@@ -23,7 +23,7 @@ export default function SectionTabs() {
             onClick={() => setSection(key)}
             className={`flex-1 py-3 font-semibold transition border shadow
               flex items-center justify-center gap-2
-              ${isActive ? "bg-blue-700 text-white" : "bg-white"}
+              ${isActive ? "bg-blue-900 text-white" : "bg-white"}
             `}
           >
             <Icon className="w-4 h-4" />
