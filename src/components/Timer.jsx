@@ -15,7 +15,7 @@ export default function Timer() {
   }, []);
 
   return (
-    <div className="bg-blue-900 text-white p-2 text-center flex w-1/4 items-center justify-center ">
+    <div className="bg-blue-900 text-white p-2 text-center flex w-1/5 items-center justify-center ">
      <TimerIcon className=" text-red-600"></TimerIcon> Time Left: {Math.floor(time / 60)}:{String(time % 60).padStart(2, "0")}
     </div>
   );

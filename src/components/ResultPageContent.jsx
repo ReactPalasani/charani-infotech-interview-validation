@@ -38,6 +38,9 @@ export default function ResultPageContent() {
       } catch (error) {
 
       }
+      finally{
+        localStorage.clear();
+      }
     };
 
     fetchResult();
