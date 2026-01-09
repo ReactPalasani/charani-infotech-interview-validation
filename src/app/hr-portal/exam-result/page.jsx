@@ -72,8 +72,8 @@ function HrPortal_Exam() {
         totalQuestions: student.totalQuestions,
         correctAnswers: student.correctAnswers,
         submittedAt: student.submittedAt,
-        feedback: "Selected for JAM Round",
-        topic: "Aptitude Evaluation",
+        feedback: "",
+        topic: "",
         score: student.correctAnswers,
         selectorName: "HR_Admin",
         Aptitude_select: true

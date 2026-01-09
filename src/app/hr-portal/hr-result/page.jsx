@@ -77,8 +77,8 @@ function HrPortal_Exam() {
         correctAnswers: student.correctAnswers,
         submittedAt: student.submittedAt,
         percentage: student.percentage,
-        feedback: "Promoted to Technical Round",
-        topic: "Technical Interview Round",
+        feedback: "",
+        topic: "",
         score: student.correctAnswers,
         selectorName: "HR_Admin",
         Aptitude_select: true

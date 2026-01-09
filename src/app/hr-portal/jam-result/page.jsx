@@ -64,10 +64,10 @@ function HrPortal_Exam() {
   const handleOpenModal = (student) => {
     setStudentId(student)
     setSelectedStudent(student);
-    setFeedback(student.feedback || "");
-    setTopic(student.topic || "");
+    setFeedback("");
+    setTopic( "");
     setSelectorName(student.selectorName || "");
-    setIsSelected(student.select || false);
+    setIsSelected(false);
     setIsModalOpen(true);
   };
 

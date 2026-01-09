@@ -70,9 +70,9 @@ function HrPortal_Exam() {
         correctAnswers: student.correctAnswers,
         percentage: student.percentage,
         submittedAt: student.submittedAt,
-        feedback: "Cleared Aptitude - Invited for Technical Interview",
-        topic: "Technical Interview Round 1",
-        status: "Technical_Pending",
+        feedback: "",
+        topic: "",
+        status: "",
         select: true 
       };
 
