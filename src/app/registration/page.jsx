@@ -218,8 +218,8 @@ export default function ExamPage() {
                                     <option value="">Select College</option>
 
                                     {collegeList?.map((college, index) => (
-                                        <option key={index} value={college}>
-                                            {college}
+                                        <option key={index} value={college.collegeName}>
+                                            {college.collegeName}
                                         </option>
                                     ))}
                                 </select>

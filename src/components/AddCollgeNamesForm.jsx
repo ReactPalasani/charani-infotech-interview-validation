@@ -37,7 +37,7 @@ export default function AddCollegeNameForm() {
                 const res = await fetch("/api/add-colleges", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ collegeName: values.collegeName }),
+                    body: JSON.stringify({ collegeName: values.collegeName,status:values.status  }),
                 });
 
                 const data = await res.json();
@@ -74,8 +74,8 @@ export default function AddCollegeNameForm() {
     });
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-            <div className="w-1/2 max-w-lg bg-white rounded-2xl shadow-xl border p-6">
+        <div className="w-4/5">
+            <div className=" bg-white rounded-2xl shadow-xl border p-6">
 
                 {/* Header */}
                 <div className="flex items-center gap-2 mb-6">

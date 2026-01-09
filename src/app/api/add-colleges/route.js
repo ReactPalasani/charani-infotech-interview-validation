@@ -1,22 +1,23 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/firebase";
-import { ref, get, push } from "firebase/database";
+import { ref, get,update } from "firebase/database";
 
-/* =========================
-   GET → Fetch all colleges
-========================= */
 export async function GET() {
   try {
     const dbRef = ref(database, "College-Names/");
     const snapshot = await get(dbRef);
 
-    const data = snapshot.exists()
+    const rawData = snapshot.exists()
       ? Object.values(snapshot.val())
       : [];
 
+    const activeColleges = rawData.filter(
+      (item) => typeof item === "object" && item.status === "active"
+    );
+
     return NextResponse.json({
       success: true,
-      data,
+      data: activeColleges,
     });
   } catch (error) {
     return NextResponse.json(
@@ -31,9 +32,9 @@ export async function GET() {
 ========================= */
 export async function POST(req) {
   try {
-    const { collegeName } = await req.json();
-
-    if (!collegeName?.trim()) {
+    const body = await req.json();
+  console.log("college names ", body.collegeName);
+    if (!body.collegeName?.trim()) {
       return NextResponse.json(
         { success: false, message: "College name required" },
         { status: 400 }
@@ -49,7 +50,7 @@ export async function POST(req) {
 
     // 🔒 Prevent duplicates
     const exists = existing.some(
-      (c) => c.toLowerCase() === collegeName.toLowerCase()
+      (c) => c.toLowerCase() === body.collegeName.toLowerCase()
     );
 
     if (exists) {
@@ -59,11 +60,51 @@ export async function POST(req) {
       });
     }
 
-    await push(dbRef, collegeName.trim());
+    await push(dbRef,body );
 
     return NextResponse.json({
       success: true,
       message: "College added successfully",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+/* =========================
+   PUT → Update college Status
+========================= */
+
+export async function PUT(req) {
+  try {
+    const body = await req.json();
+    const { id, status } = body;
+
+    if (!id || !status) {
+      return NextResponse.json(
+        { success: false, message: "College id and status are required" },
+        { status: 400 }
+      );
+    }
+
+    const collegeRef = ref(database, `College-Names/${id}`);
+    const snapshot = await get(collegeRef);
+
+    if (!snapshot.exists()) {
+      return NextResponse.json(
+        { success: false, message: "College not found" },
+        { status: 404 }
+      );
+    }
+
+    await update(collegeRef, { status });
+
+    return NextResponse.json({
+      success: true,
+      message: "Status updated successfully",
     });
   } catch (error) {
     return NextResponse.json(
