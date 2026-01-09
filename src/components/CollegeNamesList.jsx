@@ -10,7 +10,7 @@ function CollegesNamesList() {
   // Fetch colleges
   useEffect(() => {
     const fetchColleges = async () => {
-      const res = await fetch("/api/add-colleges");
+      const res = await fetch("/api/add-colleges/Admin-Level-GetApi");
       const data = await res.json();
       if (data.success) setCollegeList(data.data);
     };
@@ -81,30 +81,6 @@ function CollegesNamesList() {
       ),
     },
 
-    {
-      name: (
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            onChange={handleSelectAll}
-            checked={
-              selectedRows.length === collegeList.length &&
-              collegeList.length > 0
-            }
-          />
-          <span>Select</span>
-        </div>
-      ),
-      width: "110px",
-      cell: (row) => (
-        <input
-          type="checkbox"
-          className="w-5 h-5 cursor-pointer accent-blue-600"
-          checked={!!selectedRows.find((s) => s.id === row.id)}
-          onChange={() => handleCheckboxChange(row)}
-        />
-      ),
-    },
   ];
 
   return (
