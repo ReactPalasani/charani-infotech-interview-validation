@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/firebase";
-import { ref, get,update } from "firebase/database";
+import { ref, get, push, update } from "firebase/database";
 
+/* =========================
+   GET → Active Colleges (Public)
+========================= */
 export async function GET() {
   try {
     const dbRef = ref(database, "College-Names/");
@@ -12,7 +15,7 @@ export async function GET() {
       : [];
 
     const activeColleges = rawData.filter(
-      (item) => typeof item === "object" && item.status === "active"
+      (item) => item?.status === "active"
     );
 
     return NextResponse.json({
@@ -28,12 +31,12 @@ export async function GET() {
 }
 
 /* =========================
-   POST → Add new college
+   POST → Add College
 ========================= */
 export async function POST(req) {
   try {
     const body = await req.json();
-  console.log("college names ", body.collegeName);
+
     if (!body.collegeName?.trim()) {
       return NextResponse.json(
         { success: false, message: "College name required" },
@@ -48,10 +51,15 @@ export async function POST(req) {
       ? Object.values(snapshot.val())
       : [];
 
-    // 🔒 Prevent duplicates
-    const exists = existing.some(
-      (c) => c.toLowerCase() === body.collegeName.toLowerCase()
-    );
+    const newName = body.collegeName.trim().toLowerCase();
+
+    const exists = existing.some((c) => {
+      const name =
+        typeof c === "object" && c.collegeName
+          ? c.collegeName
+          : "";
+      return name.toLowerCase() === newName;
+    });
 
     if (exists) {
       return NextResponse.json({
@@ -60,7 +68,10 @@ export async function POST(req) {
       });
     }
 
-    await push(dbRef,body );
+    await push(dbRef, {
+      collegeName: body.collegeName.trim(),
+      status: body.status,
+    });
 
     return NextResponse.json({
       success: true,
@@ -75,17 +86,15 @@ export async function POST(req) {
 }
 
 /* =========================
-   PUT → Update college Status
+   PUT → Update Status
 ========================= */
-
 export async function PUT(req) {
   try {
-    const body = await req.json();
-    const { id, status } = body;
+    const { id, status } = await req.json();
 
     if (!id || !status) {
       return NextResponse.json(
-        { success: false, message: "College id and status are required" },
+        { success: false, message: "ID and status required" },
         { status: 400 }
       );
     }
