@@ -29,9 +29,10 @@ useEffect(() => {
   return (
     <ExamLayout>
     <ExamProvider>
-      <div className="bg-gray-100 min-h-screen">
+
         <Header />
-        <div className=" flex gap-4 p-6 ">
+              <div className="bg-gray-100 min-h-screen pl-20">
+        <div className=" flex gap-4 p-6  ">
         <SectionTabs />
         <Timer />
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useExam } from "@/context/ExamContext";
+import { useExam, } from "@/context/ExamContext";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const sections = ["Aptitude", "Reasoning", "Communication"];
 
@@ -61,11 +62,11 @@ export default function ExamPanel() {
 
   return (
     <div className="bg-white w-1/2 min-w-8/12  p-4 rounded-lg shadow">
-      <h3>
+      <h3 className="font-bold">
         Q{currentIndex + 1}. {question.question1}
       </h3>
 
-      {["A", "B", "C", "D"].map((key) => (
+      {/* {["A", "B", "C", "D"].map((key) => (
         <label key={key} className="block">
           <input
             type="radio"
@@ -75,22 +76,40 @@ export default function ExamPanel() {
           />
           {question[key]}
         </label>
-      ))}
+      ))} */}
+      <div className="mt-4 space-y-3">
+  {["A", "B", "C", "D"].map((key) => (
+    <button
+      key={key}
+      onClick={() => handleSelect(key)}
+      className={`w-full text-left px-4 py-2 rounded border
+        ${
+          sectionAnswers[currentIndex] === key
+            ? "bg-green-800 text-white border-blue-600"
+            : "bg-white text-gray-800 border-gray-300 hover:bg-blue-900 hover:text-white"
+        }`}
+    >
+      <span className="font-semibold mr-2">{key}.</span>
+      {question[key]}
+    </button>
+  ))}
+</div>
+
 
       <div className="flex justify-between mt-6">
         <button
-          className="bg-gray-600 text-white px-4 py-2 rounded"
+          className="bg-black text-white px-4 py-2 rounded flex items-center"
           onClick={() => setCurrentIndex(i => i - 1)}
           disabled={currentIndex === 0}
         >
-          Previous
+        <ArrowLeft/> Previous 
         </button>
 
         <button
-          className="bg-yellow-600 text-white px-4 py-2 rounded"
+          className="bg-yellow-600 text-white px-4 py-2 rounded flex items-center"
           onClick={handleNext}
         >
-          {isLastQuestion ? "Next Section" : "Next"}
+          {isLastQuestion ? "Next Section" : "Next"}  <ArrowRight/>
         </button>
       </div>
       {response}
