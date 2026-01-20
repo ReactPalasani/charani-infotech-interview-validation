@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from "next/navigation";
 import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 // import UserService from '@/lib/services';
 // import { NextResponse } from 'next/server';
 const validationSchema = Yup.object({
@@ -132,6 +133,7 @@ export default function ExamPage() {
 
     return (
         <>
+        <Header/>
             <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 font-sans text-black">
                 <div className="flex flex-col md:flex-row w-full max-w-6xl rounded-xl shadow-2xl overflow-hidden bg-white">
 
