@@ -84,6 +84,9 @@ const fetchResult = async () => {
   } catch (error) {
     console.error("Result fetch failed:", error);
   }
+  finally{
+     localStorage.clear();
+  };
 };
 
 
