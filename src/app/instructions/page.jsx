@@ -5,6 +5,7 @@ import InstructionsLayout from "./layout";
 import { Info, AlertTriangle, CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/Footer";
 
 function InstructionsPage() {
   const [accepted, setAccepted] = useState(false);
@@ -136,6 +137,7 @@ useEffect(() => {
           </button>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }
