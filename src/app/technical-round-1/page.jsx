@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import SubmitExamButton from "@/components/SubmitExamButton";
 import { useRouter } from "next/navigation";
 import { useState,useEffect } from "react";
-import FullScreenComponent from "@/components/FullScreenComponent";
 
 import ExamLayout1 from "./layout";
 import { ExamProvider } from "@/context/Tr1Context";
