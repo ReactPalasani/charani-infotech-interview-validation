@@ -3,7 +3,7 @@
 export default function ExamLayout1({ children }) {
 
   return (
-    <div ref={ref}>
+    <div>
       {children}
     </div>
   );
