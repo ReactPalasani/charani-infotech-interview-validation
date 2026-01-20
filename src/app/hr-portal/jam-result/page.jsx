@@ -146,8 +146,8 @@ function HrPortal_Exam() {
         selectSearch === ""
           ? true
           : selectSearch === "yes"
-            ? student.select === true
-            : student.select === false;
+            ? student.Aptitude_select === true
+            : student.Aptitude_select === false;
 
       return matchStudentId && matchCollegeName && matchCorrectAnswers && matchSelect;
     });

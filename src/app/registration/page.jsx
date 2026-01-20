@@ -4,6 +4,7 @@ import { ShieldCheck, Timer, CheckCircle, User, Mail, Phone, BookOpen, Building2
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from "next/navigation";
+import Footer from '@/components/Footer';
 // import UserService from '@/lib/services';
 // import { NextResponse } from 'next/server';
 const validationSchema = Yup.object({
@@ -297,6 +298,7 @@ export default function ExamPage() {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </>
     );
 }
