@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState,useEffect } from "react";
 import FullScreenComponent from "@/components/FullScreenComponent";
 import ExamLayout from "./layout";
+import Footer from "@/components/Footer";
 export default function ExamPage() {
   const router=useRouter();
    const [StudentData, setStudentData] = useState(null);
@@ -44,6 +45,7 @@ useEffect(() => {
         {/* <SubmitExamButton /> */}
       </div>
     </ExamProvider>
+    <Footer/>
     </ExamLayout>
   );
 }
