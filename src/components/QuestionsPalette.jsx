@@ -29,12 +29,12 @@ export default function QuestionPalette() {
       </div>
  <div className="grid grid-cols-1 gap-3 mt-4 text-sm">
   <div className="flex items-center gap-2">
-    <span className="w-4 h-4 rounded-full bg-green-800"></span>
+    <span className="w-4 h-4 rounded-full bg-green-900"></span>
     <b>Answered</b>
   </div>
 
   <div className="flex items-center gap-2">
-    <span className="w-4 h-4 rounded-full bg-blue-800"></span>
+    <span className="w-4 h-4 rounded-full bg-blue-900"></span>
     <b>Current</b>
   </div>
 

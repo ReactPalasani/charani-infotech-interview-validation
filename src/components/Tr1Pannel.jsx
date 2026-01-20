@@ -1,6 +1,7 @@
 "use client";
 
 import { useExam } from "@/context/Tr1Context";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const sections = ["Html", "Css3", "Javascript", "Java"];
 
@@ -60,36 +61,50 @@ export default function ExamPanel() {
 
   return (
     <div className="bg-white w-1/2 min-w-8/12  p-4 rounded-lg shadow">
-      <h3>
-        Q{currentIndex + 1}. {question.question1}
-      </h3>
+      <h3 className="font-bold">
+  Q{currentIndex + 1}. {question.question1}
+</h3>
 
-      {["A", "B", "C", "D"].map((key) => (
-        <label key={key} className="block">
-          <input
-            type="radio"
-            name={`q-${currentIndex}`}
-            checked={sectionAnswers[currentIndex] === key}
-            onChange={() => handleSelect(key)}
-          />
-          {question[key]}
-        </label>
-      ))}
+<div className="flex flex-col gap-2 mt-4">
+  {["A", "B", "C", "D"].map((key) => {
+    const isSelected = sectionAnswers[currentIndex] === key;
+    return (
+      <label 
+        key={key} 
+        className={`
+          block cursor-pointer px-4 py-3 border rounded-lg transition-colors
+          ${isSelected 
+            ? "bg-green-900 text-white border-green-900" 
+            : "bg-gray-100 hover:bg-blue-900 hover:text-white border-gray-900"}
+        `}
+      >
+        <input
+          type="radio"
+          className="hidden" // Hides the actual radio circle
+          name={`q-${currentIndex}`}
+          checked={isSelected}
+          onChange={() => handleSelect(key)}
+        />
+        <span className="font-medium mr-2">{key}.</span> {question[key]}
+      </label>
+    );
+  })}
+</div>
 
       <div className="flex justify-between mt-6">
         <button
-          className="bg-gray-600 text-white px-4 py-2 rounded"
+          className="bg-black text-white px-4 py-2 rounded flex items-center"
           onClick={() => setCurrentIndex(i => i - 1)}
           disabled={currentIndex === 0}
         >
-          Previous
+          Previous<ArrowLeft/>
         </button>
 
         <button
-          className="bg-yellow-600 text-white px-4 py-2 rounded"
+          className="bg-yellow-600 text-white px-4 py-2 rounded flex items-center"
           onClick={handleNext}
         >
-          {isLastQuestion ? "Next Section" : "Next"}
+          {isLastQuestion ? "Next Section" : "Next"}<ArrowRight/>
         </button>
         {response}
       </div>

@@ -41,7 +41,8 @@ function HrPortal_Exam() {
                 ...value,
               }))
           );
-          setStudentData(flattened);
+          setStudentData(data.data);
+          console.log("flattened",flattened);
         }
       } catch (error) {
         setResponse(
@@ -164,6 +165,7 @@ function HrPortal_Exam() {
     },
     { name: "Name", selector: row => row.studentName, sortable: true },
     { name: "Email", selector: row => row.studentEmail, sortable: true, width: "250px" },
+     { name: "Phone Number", selector: row => row.phone, sortable: true, width: "250px" },
     { name: "Student ID", selector: row => row.studentId, sortable: true },
     { name: "College Name", selector: row => row.collegeName, sortable: true, width: "250px" },
     { name: "Total Questions", selector: row => row.totalQuestions, sortable: true },
