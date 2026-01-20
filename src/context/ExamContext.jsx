@@ -144,51 +144,8 @@ useEffect(() => {
   };
 }, []);
 
-useEffect(() => {
-  const onExit = () => {
-    alert("Fullscreen required for exam!");
-    document.documentElement.requestFullscreen();
-  };
-
-  document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) onExit();
-  });
-
-  return () =>
-    document.removeEventListener("fullscreenchange", onExit);
-}, []);
-
- const fullScreenTargetRef = useRef(null);
-
-  const handleFullScreen = async () => {
-    const el = fullScreenTargetRef.current;
-
-    if (!el) return;
-
-    try {
-      if (el.requestFullscreen) {
-        await el.requestFullscreen();
-      } else if (el.webkitRequestFullscreen) {
-        await el.webkitRequestFullscreen();
-      }
-
-    } catch (err) {
-    
-
-    }
-  };
-
   return (
-       <div
-      ref={fullScreenTargetRef}
-    >
-      <button
-        onClick={handleFullScreen}
-        className="bg-black text-white p-2 rounded-sm"
-      >
-        Go Full Screen
-      </button>
-
+       <div >
     <ExamContext.Provider
       value={{
         response,
